@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"> <!-- Кодировка нашей страницы -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Для своместимости с IE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Для красивого и правильного отображения на мобильных устройств -->
+    <meta name="description" content="Это мой первый пример страницы"> <!-- Описание страницы -->
+    <meta name="author" content="Рамиль"> <!-- Автор страницы -->
+    <title>Список сотрудников</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header">
+            <h1 class="title_header">Отображение всех сотрудников</h1>
+        </div>
+    </header>
+
+<!--    <form method="get" th:action="@{/tasks}">-->
+<!--        <button type="submit" name="submit" value="value" class="link-button">Задачи</button>-->
+<!--    </form>-->
+    <div class="btn">
+        <button class="btn_emp btn_title">Сотрудники</button>
+        <button class="btn_task btn_title">Задачи</button>
+    </div>
+
+    <table class="table" border="0">
+
+        <tr class="table_tr_root">
+            <th class="table_th">ID</th>
+            <th class="table_th">ФИО</th>
+            <th class="table_th">Руководитель</th>
+            <th class="table_th">Филиал</th>
+            <th class="table_th">Количество задач</th>
+        </tr>
+
+        <tr class="table_tr" th:each="person : ${allEmployees}">
+            <td class="table_th" th:utext="${person.getId()}"></td>
+            <td class="table_th" th:utext="${person.getFull_name()}"></td>
+            <td class="table_th" th:utext="${person.getLeaderName()}"></td>
+            <td class="table_th" th:utext="${person.getBranch_name()}"></td>
+            <td class="table_th" th:utext="${person.getNumber_tasks()}"></td>
+        </tr>
+    </table>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

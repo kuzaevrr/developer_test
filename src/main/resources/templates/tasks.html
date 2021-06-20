@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"> <!-- Кодировка нашей страницы -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Для своместимости с IE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Для красивого и правильного отображения на мобильных устройств -->
+    <meta name="description" content="Это мой первый пример страницы"> <!-- Описание страницы -->
+    <meta name="author" content="Рамиль"> <!-- Автор страницы -->
+    <title>Отображение всех задач</title>
+</head>
+<body>
+<h1>Отображение всех задач</h1>
+<br/>
+<form method="get" th:action="@{/employees}">
+    <button type="submit" name="submit" value="value" class="link-button">Сотрудники</button>
+</form>
+<br/>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Исполнитель</th>
+        <th>Приоритет</th>
+    </tr>
+
+    <tr th:each="task : ${allTasks}">
+        <td th:utext="${task.getId()}"></td>
+        <td th:utext="${task.getDescription()}"></td>
+        <td th:utext="${task.getNameEmployee()}"></td>
+        <td th:utext="${task.getPriority()}"></td>
+    </tr>
+</table>
+</body>
+</html>
