@@ -9,6 +9,7 @@
     <meta name="author" content="Рамиль"> <!-- Автор страницы -->
     <title>Список сотрудников</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -25,25 +26,27 @@
         <button class="btn_emp btn_title">Сотрудники</button>
         <button class="btn_task btn_title">Задачи</button>
     </div>
+    <div class="div_table">
+        <table class="table_emps table"></table>
+        <table class="table_tasks table"></table>
+    </div>
 
-    <table class="table" border="0">
+<!--        <tr class="table_tr_root">-->
+<!--            <th class="table_th">ID</th>-->
+<!--            <th class="table_th">ФИО</th>-->
+<!--            <th class="table_th">Руководитель</th>-->
+<!--            <th class="table_th">Филиал</th>-->
+<!--            <th class="table_th">Количество задач</th>-->
+<!--        </tr>-->
 
-        <tr class="table_tr_root">
-            <th class="table_th">ID</th>
-            <th class="table_th">ФИО</th>
-            <th class="table_th">Руководитель</th>
-            <th class="table_th">Филиал</th>
-            <th class="table_th">Количество задач</th>
-        </tr>
+<!--        <tr class="table_tr" th:each="person : ${allEmployees}">-->
+<!--            <td class="table_th" th:utext="${person.getId()}"></td>-->
+<!--            <td class="table_th" th:utext="${person.getFull_name()}"></td>-->
+<!--            <td class="table_th" th:utext="${person.getLeaderName()}"></td>-->
+<!--            <td class="table_th" th:utext="${person.getBranch_name()}"></td>-->
+<!--            <td class="table_th" th:utext="${person.getNumber_tasks()}"></td>-->
+<!--        </tr>-->
 
-        <tr class="table_tr" th:each="person : ${allEmployees}">
-            <td class="table_th" th:utext="${person.getId()}"></td>
-            <td class="table_th" th:utext="${person.getFull_name()}"></td>
-            <td class="table_th" th:utext="${person.getLeaderName()}"></td>
-            <td class="table_th" th:utext="${person.getBranch_name()}"></td>
-            <td class="table_th" th:utext="${person.getNumber_tasks()}"></td>
-        </tr>
-    </table>
 </div>
 
 <script src="js/main.js"></script>

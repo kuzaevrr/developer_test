@@ -39,6 +39,13 @@
     width: 100%;
 }
 
+.show{
+    display: table;
+}
+
+.none{
+    display: none;
+}
 
 .table_th{
     padding: 5px;

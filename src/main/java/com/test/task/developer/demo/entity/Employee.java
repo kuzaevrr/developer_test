@@ -7,7 +7,7 @@ public class Employee {
     Integer leader;
     String branch_name;
 
-    Integer number_tasks;
+    Integer numberTasks;
     String leaderName;
 
     public Employee(String full_name, Integer leader,  String branch_name) {
@@ -31,12 +31,12 @@ public class Employee {
         this.leaderName = leaderName;
     }
 
-    public Integer getNumber_tasks() {
-        return number_tasks;
+    public Integer getNumberTasks() {
+        return numberTasks;
     }
 
-    public void setNumber_tasks(Integer number_tasks) {
-        this.number_tasks = number_tasks;
+    public void setNumberTasks(Integer numberTasks) {
+        this.numberTasks = numberTasks;
     }
 
     public Integer getId() {
