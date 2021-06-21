@@ -41,7 +41,6 @@ window.addEventListener("DOMContentLoaded", () => {
         $(document).ready(function () {
             $.get(url, function (data) {
 
-
                 let docRemove = document.querySelectorAll("." + tableName + " .table_tr");
                 if (docRemove != null) {
                     docRemove.forEach(item => {
@@ -108,10 +107,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     buttonEmployee.addEventListener("click", () => {
-        clickable_sort(document.querySelector(".table"),
-            document.querySelectorAll(".image_sort"));
         createTable(urlBase + "/api/allEmployees", "table_emps");
-
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
     });
