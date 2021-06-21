@@ -15,37 +15,55 @@
 <div class="container">
     <header>
         <div class="header">
-            <h1 class="title_header">Отображение всех сотрудников</h1>
+            <h1 class="title_header">Список задач и исполнителей</h1>
         </div>
     </header>
 
-<!--    <form method="get" th:action="@{/tasks}">-->
-<!--        <button type="submit" name="submit" value="value" class="link-button">Задачи</button>-->
-<!--    </form>-->
+    <!--    <form method="get" th:action="@{/tasks}">-->
+    <!--        <button type="submit" name="submit" value="value" class="link-button">Задачи</button>-->
+    <!--    </form>-->
     <div class="btn">
         <button class="btn_emp btn_title">Сотрудники</button>
         <button class="btn_task btn_title">Задачи</button>
     </div>
     <div class="div_table">
-        <table class="table_emps table"></table>
-        <table class="table_tasks table"></table>
+        <table class="table_emps table">
+            <tr class="table_tr_root">
+                <th class="table_th">ID
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">ФИО
+                   <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Руководитель
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Филиал
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Количество задач
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+            </tr>
+        </table>
+        <table class="table_tasks table none">
+            <tr class="table_tr_root">
+                <th class="table_th">ID
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Название
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Исполнитель
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+                <th class="table_th">Приоритет
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
+            </tr>
+        </table>
     </div>
 
-<!--        <tr class="table_tr_root">-->
-<!--            <th class="table_th">ID</th>-->
-<!--            <th class="table_th">ФИО</th>-->
-<!--            <th class="table_th">Руководитель</th>-->
-<!--            <th class="table_th">Филиал</th>-->
-<!--            <th class="table_th">Количество задач</th>-->
-<!--        </tr>-->
 
-<!--        <tr class="table_tr" th:each="person : ${allEmployees}">-->
-<!--            <td class="table_th" th:utext="${person.getId()}"></td>-->
-<!--            <td class="table_th" th:utext="${person.getFull_name()}"></td>-->
-<!--            <td class="table_th" th:utext="${person.getLeaderName()}"></td>-->
-<!--            <td class="table_th" th:utext="${person.getBranch_name()}"></td>-->
-<!--            <td class="table_th" th:utext="${person.getNumber_tasks()}"></td>-->
-<!--        </tr>-->
+
+    <!--        <tr class="table_tr" th:each="person : ${allEmployees}">-->
+    <!--            <td class="table_th" th:utext="${person.getId()}"></td>-->
+    <!--            <td class="table_th" th:utext="${person.getFull_name()}"></td>-->
+    <!--            <td class="table_th" th:utext="${person.getLeaderName()}"></td>-->
+    <!--            <td class="table_th" th:utext="${person.getBranch_name()}"></td>-->
+    <!--            <td class="table_th" th:utext="${person.getNumber_tasks()}"></td>-->
+    <!--        </tr>-->
 
 </div>
 
