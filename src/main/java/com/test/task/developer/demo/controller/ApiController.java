@@ -68,4 +68,9 @@ public class ApiController {
 
         return tasks;
     }
+
+    @GetMapping("get_sort_up")
+    public List<Employee> getSortUp(){
+        return getAllEmployee();
+    }
 }

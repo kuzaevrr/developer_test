@@ -7,52 +7,66 @@ window.addEventListener("DOMContentLoaded", () => {
         urlBase = "http://localhost:8080";
 
 
-    createTable(urlBase + "/api/allEmployees", "table_emps");
+    loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
     clickable_sort(document.querySelectorAll(".table"),
         document.querySelectorAll(".image_sort"));
 
     buttonEmployee.setAttribute("disabled", true);
 
     buttonTask.addEventListener("click", () => {
-        createTable(urlBase + "/api/allTasks", "table_tasks");
+        loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
     });
 
     buttonEmployee.addEventListener("click", () => {
-        createTable(urlBase + "/api/allEmployees", "table_emps");
+        loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
     });
 
 
-
-
     function clickable_sort(buttonTable, buttonSort) {
-        buttonTable.forEach(item =>{
+        buttonTable.forEach(item => {
             let length = 1;
-            let numb =[];
+            let numb = [];
             item.addEventListener("click", (event) => {
                 const target = event.target;
                 if (target && target.classList.contains("image_sort")) {
                     buttonSort.forEach((item, i) => {
-                        if(length){
+                        if (length) {
                             numb.push(1);
                             length++;
-                            if(length === buttonSort.length+1){
+                            if (length === buttonSort.length + 1) {
                                 length = 0;
                             }
 
                         }
                         if (target === item) {
                             numb[i]++;
-                            if(numb[i]===1){
-                                item.src = "images/sort.png";
-                            }else if(numb[i]===2){
-                                item.src = "images/up.png";
-                            }else if(numb[i]===3){
-                                item.src = "images/down.png";
-                                numb[i] =0;
+                            if (numb[i] === 1) {
+                                item.src = 'images/sort.png';
+
+                            } else if (numb[i] === 2) {
+                                item.src = 'images/up.png';
+                                let xhttp = new XMLHttpRequest();
+                                xhttp.open("GET", urlBase + "/api/" + "get_sort_up", true);
+                                xhttp.send();
+                                xhttp.onload = function() { // (3)
+
+                                    if (xhttp.status != 200) {
+                                        alert(xhttp.status + ': ' + xhttp.statusText);
+                                    } else {
+                                        console.log(xhttp.response);
+                                    }
+
+                                }
+                                // createTable(xhttp, "table_emps");
+
+
+                            } else if (numb[i] === 3) {
+                                item.src = 'images/down.png';
+                                numb[i] = 0;
                             }
                             console.log(numb.length);
                             console.log(numb);
@@ -78,50 +92,51 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function createTable(data, tableName) {
+        let docRemove = document.querySelectorAll("." + tableName + " .table_tr");
+        if (docRemove != null) {
+            docRemove.forEach(item => {
+                item.remove();
+            });
+        }
+        let table = "";
 
-    function createTable(url, tableName) {
+        data.forEach(item => {
+
+            if (tableName === "table_emps") {
+
+                visible(true);
+                if (item.leaderName == null) {
+                    item.leaderName = "";
+                }
+                table +=
+                    "<tr class=\"table_tr\">" +
+                    "<td class=\"table_th\">" + item.id + "</td>" +
+                    "<td class=\"table_th\">" + item.full_name + "</td>" +
+                    "<td class=\"table_th\">" + item.leaderName + "</td>" +
+                    "<td class=\"table_th\">" + item.branch_name + "</td>" +
+                    "<td class=\"table_th\">" + item.numberTasks + "</td>" +
+                    "</tr>";
+            } else if (tableName === "table_tasks") {
+
+                visible(false);
+                table +=
+                    "<tr class=\"table_tr\">" +
+                    "<td class=\"table_th\">" + item.id + "</td>" +
+                    "<td class=\"table_th\">" + item.description + "</td>" +
+                    "<td class=\"table_th\">" + item.nameEmployee + "</td>" +
+                    "<td class=\"table_th\">" + item.priority + "</td>" +
+                    "</tr>";
+            }
+        });
+        document.querySelector("." + tableName).insertAdjacentHTML("beforeEnd", table);
+        tableView();
+    }
+
+    function loadAndCreateTable(url, tableName) {
         $(document).ready(function () {
             $.get(url, function (data) {
-
-                let docRemove = document.querySelectorAll("." + tableName + " .table_tr");
-                if (docRemove != null) {
-                    docRemove.forEach(item => {
-                        item.remove();
-                    });
-                }
-                let table = "";
-                data.forEach(item => {
-
-                    if (tableName === "table_emps") {
-
-                        visible(true);
-
-
-                        if (item.leaderName == null) {
-                            item.leaderName = "";
-                        }
-                        table +=
-                            "<tr class=\"table_tr\">" +
-                            "<td class=\"table_th\">" + item.id + "</td>" +
-                            "<td class=\"table_th\">" + item.full_name + "</td>" +
-                            "<td class=\"table_th\">" + item.leaderName + "</td>" +
-                            "<td class=\"table_th\">" + item.branch_name + "</td>" +
-                            "<td class=\"table_th\">" + item.numberTasks + "</td>" +
-                            "</tr>";
-                    } else if (tableName === "table_tasks") {
-
-                        visible(false);
-                        table +=
-                            "<tr class=\"table_tr\">" +
-                            "<td class=\"table_th\">" + item.id + "</td>" +
-                            "<td class=\"table_th\">" + item.description + "</td>" +
-                            "<td class=\"table_th\">" + item.nameEmployee + "</td>" +
-                            "<td class=\"table_th\">" + item.priority + "</td>" +
-                            "</tr>";
-                    }
-                });
-                document.querySelector("." + tableName).insertAdjacentHTML("beforeEnd", table);
-                tableView();
+                createTable(data, tableName);
             });
         });
     }
