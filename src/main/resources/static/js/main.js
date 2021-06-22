@@ -6,14 +6,56 @@ window.addEventListener("DOMContentLoaded", () => {
         tableTask = document.querySelector(".table_tasks"),
         urlBase = "http://localhost:8080";
 
+
+    createTable(urlBase + "/api/allEmployees", "table_emps");
+    clickable_sort(document.querySelectorAll(".table"),
+        document.querySelectorAll(".image_sort"));
+
+    buttonEmployee.setAttribute("disabled", true);
+
+    buttonTask.addEventListener("click", () => {
+        createTable(urlBase + "/api/allTasks", "table_tasks");
+        buttonTask.setAttribute("disabled", true);
+        buttonEmployee.removeAttribute("disabled");
+    });
+
+    buttonEmployee.addEventListener("click", () => {
+        createTable(urlBase + "/api/allEmployees", "table_emps");
+        buttonEmployee.setAttribute("disabled", true);
+        buttonTask.removeAttribute("disabled");
+    });
+
+
+
+
     function clickable_sort(buttonTable, buttonSort) {
         buttonTable.forEach(item =>{
+            let length = 1;
+            let numb =[];
             item.addEventListener("click", (event) => {
                 const target = event.target;
                 if (target && target.classList.contains("image_sort")) {
                     buttonSort.forEach((item, i) => {
-                        if (target == item) {
-                            console.log(i);
+                        if(length){
+                            numb.push(1);
+                            length++;
+                            if(length === buttonSort.length+1){
+                                length = 0;
+                            }
+
+                        }
+                        if (target === item) {
+                            numb[i]++;
+                            if(numb[i]===1){
+                                item.src = "images/sort.png";
+                            }else if(numb[i]===2){
+                                item.src = "images/up.png";
+                            }else if(numb[i]===3){
+                                item.src = "images/down.png";
+                                numb[i] =0;
+                            }
+                            console.log(numb.length);
+                            console.log(numb);
                         }
                     });
                 }
@@ -91,27 +133,6 @@ window.addEventListener("DOMContentLoaded", () => {
         tableTask.classList.add(arr[+bool]);
         tableEmp.classList.remove(arr[+bool]);
     }
-
-
-
-    createTable(urlBase + "/api/allEmployees", "table_emps");
-    clickable_sort(document.querySelectorAll(".table"),
-        document.querySelectorAll(".image_sort"));
-
-    buttonEmployee.setAttribute("disabled", true);
-
-    buttonTask.addEventListener("click", () => {
-        createTable(urlBase + "/api/allTasks", "table_tasks");
-        buttonTask.setAttribute("disabled", true);
-        buttonEmployee.removeAttribute("disabled");
-    });
-
-    buttonEmployee.addEventListener("click", () => {
-        createTable(urlBase + "/api/allEmployees", "table_emps");
-        buttonEmployee.setAttribute("disabled", true);
-        buttonTask.removeAttribute("disabled");
-    });
-
 
 });
 
