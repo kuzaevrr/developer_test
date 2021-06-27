@@ -40,30 +40,4 @@ public class Controller {
         return "main";
     }
 
-
-    @GetMapping("/tasks")
-    public String tasks(Model model){
-
-//        List<Task> tasks = service.allTasks();
-//        List<Employee> employeeList = service.allEmployees();
-//
-//        for(Task task: tasks){
-//            for(Employee employee: employeeList){
-//                if(task.getEmployee_id() == employee.getId()){
-//                    task.setNameEmployee(employee.getFull_name());
-//                    break;
-//                }
-//            }
-//        }
-//        tasks.sort(new Comparator<Task>() {
-//            @Override
-//            public int compare(Task task, Task t1) {
-//                return task.getPriority().compareTo(t1.getPriority());
-//            }
-//        }.reversed());
-//
-//        model.addAttribute("allTasks", tasks);
-        return "tasks";
-    }
-
 }

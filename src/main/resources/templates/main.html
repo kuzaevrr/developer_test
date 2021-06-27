@@ -25,6 +25,10 @@
     <div class="btn">
         <button class="btn_emp btn_title">Сотрудники</button>
         <button class="btn_task btn_title">Задачи</button>
+        <div class="btn_add">
+            <button class="btn_add_emp btn_title show">Добавить сотрудника</button>
+            <button class="btn_add_task btn_title hide">Добавить задачу</button>
+        </div>
     </div>
     <div class="div_table">
         <table class="table_emps table">
@@ -32,7 +36,7 @@
                 <th class="table_th">ID
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
                 <th class="table_th">ФИО
-                   <img class="image_sort" src="images/sort.png" alt=""/></th>
+                    <img class="image_sort" src="images/sort.png" alt=""/></th>
                 <th class="table_th">Руководитель
                     <img class="image_sort" src="/images/sort.png" alt=""/></th>
                 <th class="table_th">Филиал
@@ -41,7 +45,7 @@
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
             </tr>
         </table>
-        <table class="table_tasks table none">
+        <table class="table_tasks table hide">
             <tr class="table_tr_root">
                 <th class="table_th">ID
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
@@ -56,7 +60,6 @@
     </div>
 
 
-
     <!--        <tr class="table_tr" th:each="person : ${allEmployees}">-->
     <!--            <td class="table_th" th:utext="${person.getId()}"></td>-->
     <!--            <td class="table_th" th:utext="${person.getFull_name()}"></td>-->
@@ -66,7 +69,45 @@
     <!--        </tr>-->
 
 </div>
+<div class="modal_emp">
+    <div class="modal_dialog">
+        <div class="modal_content">
+            <form action="#">
+                <div class="modal_emp_title">Редактирование -</div>
 
+<!--                Сделать таблицу-->
+                <div class="modals_block">
+                    <div class="title">ФИО</div>
+                    <input required placeholder="ФИО" name="full_name" type="text" class="fio_input">
+                </div>
+                <div class="modals_block">
+                    <div class="title">Руководитель</div>
+                    <select name="emp_id" id="1" class="leader_select"></select>
+                </div>
+                <div class="modals_block">
+                    <snap class="title">Филлиал</snap>
+                    <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input">
+                </div>
+
+                <div class="btn_modal">
+                    <button class="btn_form_delete this_btn_modal">Удалить</button>
+                    <button class="btn_form_close this_btn_modal">Отмена</button>
+                    <button class="btn_form_save this_btn_modal">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script src="js/main.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

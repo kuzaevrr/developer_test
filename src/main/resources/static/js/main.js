@@ -4,7 +4,11 @@ window.addEventListener("DOMContentLoaded", () => {
         buttonEmployee = document.querySelector(".btn_emp"),
         tableEmp = document.querySelector(".table_emps"),
         tableTask = document.querySelector(".table_tasks"),
-        urlBase = "http://localhost:8080";
+        urlBase = "http://localhost:8080",
+        btnAdd = document.querySelectorAll(".btn_add"),
+        btnAddEmp = document.querySelector(".btn_add_emp"),
+        btnAddTask = document.querySelector(".btn_add_task"),
+        modalContent = document.querySelector(".modal_emp");
 
 
     loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
@@ -12,19 +16,43 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".image_sort"));
 
     buttonEmployee.setAttribute("disabled", true);
+    startVisibleBtnAdd();
 
     buttonTask.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
+        reverseVisibleBtnAdd(btnAddTask, btnAddEmp);
     });
 
     buttonEmployee.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
+        reverseVisibleBtnAdd(btnAddEmp, btnAddTask);
     });
 
+    btnAdd.forEach((item, i)=>{
+        item.addEventListener('click', ()=>{
+            if(i === 0){
+                modalTitle =  modalContent.querySelector(".modal_emp_title");
+                modalTitle.textContent = "Создание - Сотрудника";
+                modalContent.style.display = 'block';
+            }
+        })
+    });
+
+    function reverseVisibleBtnAdd(btnVisible, btnInvisible) {
+        btnInvisible.classList.add('hide');
+        btnInvisible.classList.remove('show');
+        btnVisible.classList.add('show');
+        btnVisible.classList.remove('hide');
+
+    }
+
+    function startVisibleBtnAdd() {
+        btnAddEmp.classList.add('show');
+    }
 
     function clickable_sort(buttonTable, buttonSort) {
         buttonTable.forEach(item => {
@@ -40,7 +68,6 @@ window.addEventListener("DOMContentLoaded", () => {
                             if (length === buttonSort.length + 1) {
                                 length = 0;
                             }
-
                         }
                         if (target === item) {
                             numb[i]++;
@@ -49,21 +76,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
                             } else if (numb[i] === 2) {
                                 item.src = 'images/up.png';
-                                let xhttp = new XMLHttpRequest();
-                                xhttp.open("GET", urlBase + "/api/" + "get_sort_up", true);
-                                xhttp.send();
-                                xhttp.onload = function() { // (3)
-
-                                    if (xhttp.status != 200) {
-                                        alert(xhttp.status + ': ' + xhttp.statusText);
-                                    } else {
-                                        console.log(xhttp.response);
-                                    }
-
-                                }
+                                // let xhttp = new XMLHttpRequest();
+                                // xhttp.open("GET", urlBase + "/api/" + "get_sort_up", true);
+                                // xhttp.send();
+                                // xhttp.onload = function() { // (3)
+                                //
+                                //     if (xhttp.status != 200) {
+                                //         alert(xhttp.status + ': ' + xhttp.statusText);
+                                //     } else {
+                                //         console.log(xhttp.response);
+                                //     }
+                                // }
                                 // createTable(xhttp, "table_emps");
-
-
                             } else if (numb[i] === 3) {
                                 item.src = 'images/down.png';
                                 numb[i] = 0;
@@ -142,11 +166,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function visible(bool) {
-        let arr = ["show", "none"];
+        let arr = ["show", "hide"];
         tableEmp.classList.add(arr[+!bool]);
         tableTask.classList.remove(arr[+!bool]);
-        tableTask.classList.add(arr[+bool]);
         tableEmp.classList.remove(arr[+bool]);
+        tableTask.classList.add(arr[+bool]);
     }
 
 });
