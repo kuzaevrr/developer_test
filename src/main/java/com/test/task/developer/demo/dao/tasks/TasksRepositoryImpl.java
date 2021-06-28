@@ -17,7 +17,9 @@ import java.util.Objects;
 
 @Repository
 @Transactional
-public class TasksRepositoryImpl implements TasksRepository {
+public class TasksRepositoryImpl
+        implements TasksRepository
+        {
 
     @Autowired
     private DSLContext dsl;

@@ -72,22 +72,35 @@
 <div class="modal_emp">
     <div class="modal_dialog">
         <div class="modal_content">
-            <form action="#">
+            <form action="#" class="modal_form">
                 <div class="modal_emp_title">Редактирование -</div>
-
 <!--                Сделать таблицу-->
-                <div class="modals_block">
-                    <div class="title">ФИО</div>
-                    <input required placeholder="ФИО" name="full_name" type="text" class="fio_input">
-                </div>
-                <div class="modals_block">
-                    <div class="title">Руководитель</div>
-                    <select name="emp_id" id="1" class="leader_select"></select>
-                </div>
-                <div class="modals_block">
-                    <snap class="title">Филлиал</snap>
-                    <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input">
-                </div>
+                <table class="modal_table">
+                    <tr>
+                        <td><div class="title">ФИО</div></td>
+                        <td><input required placeholder="ФИО" name="full_name" type="text" class="fio_input two"></td>
+                    </tr>
+                    <tr>
+                        <td><div class="title">Руководитель</div></td>
+                        <td><select name="emp_id" id="1" class="leader_select two"></select></td>
+                    </tr>
+                    <tr>
+                        <td> <snap class="title">Филлиал</snap></td>
+                        <td> <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input two"></td>
+                    </tr>
+                </table>
+<!--                <div class="modals_block">-->
+<!--                    <div class="title">ФИО</div>-->
+<!--                    <input required placeholder="ФИО" name="full_name" type="text" class="fio_input">-->
+<!--                </div>-->
+<!--                <div class="modals_block">-->
+<!--                    <div class="title">Руководитель</div>-->
+<!--                    <select name="emp_id" id="1" class="leader_select"></select>-->
+<!--                </div>-->
+<!--                <div class="modals_block">-->
+<!--                    <snap class="title">Филлиал</snap>-->
+<!--                    <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input">-->
+<!--                </div>-->
 
                 <div class="btn_modal">
                     <button class="btn_form_delete this_btn_modal">Удалить</button>

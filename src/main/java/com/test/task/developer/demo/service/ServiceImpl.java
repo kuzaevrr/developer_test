@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @org.springframework.stereotype.Service
-public class ServiceImpl implements Service {
+public class ServiceImpl
+        implements Service
+{
 
     @Autowired
     private EmployeesRepository employeesRepository;

@@ -8,15 +8,15 @@
         <dbms type="postgresql"/>
     </preConditions>
 
-<!--    <changeSet id="1" author="ramil_kuzaev">-->
-<!--        <tagDatabase tag="db_init"/>-->
-<!--    </changeSet>-->
+    <changeSet id="1" author="ramil_kuzaev">
+        <tagDatabase tag="db_init"/>
+    </changeSet>
 
     <include file="v-1.0/db.changelog-v.1.0.xml" relativeToChangelogFile="true"/>
 
-<!--    <changeSet id="4" author="ramil_kuzaev">-->
-<!--        <tagDatabase tag="v.1.0"/>-->
-<!--    </changeSet>-->
+    <changeSet id="4" author="ramil_kuzaev">
+        <tagDatabase tag="v.1.0"/>
+    </changeSet>
 
 
 

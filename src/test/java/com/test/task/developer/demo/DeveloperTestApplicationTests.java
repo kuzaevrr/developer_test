@@ -23,9 +23,9 @@ class DeveloperTestApplicationTests {
     @Test
     void setEmployees() {
         Employee employee = new Employee();
-        employee.setFull_name("Максимов Максим Максимович");
-//        employee.setLeader(15);
-        employee.setBranch_name("ДОТС");
+        employee.setFull_name("Петров Петр Петрович");
+        employee.setLeader(2);
+        employee.setBranch_name("HR");
         service.setEmployee(employee);
         System.out.println(employee);
     }
@@ -61,9 +61,9 @@ class DeveloperTestApplicationTests {
     @Test
     void setTask(){
         service.setTask(new Task(
-                7,
-                "Прогулка",
-                15
+                5,
+                "Оптимизация",
+                2
         ));
     }
 }

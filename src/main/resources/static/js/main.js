@@ -1,3 +1,4 @@
+// noinspection BadExpressionStatementJS
 window.addEventListener("DOMContentLoaded", () => {
 
     const buttonTask = document.querySelector(".btn_task "),
@@ -8,7 +9,8 @@ window.addEventListener("DOMContentLoaded", () => {
         btnAdd = document.querySelectorAll(".btn_add"),
         btnAddEmp = document.querySelector(".btn_add_emp"),
         btnAddTask = document.querySelector(".btn_add_task"),
-        modalContent = document.querySelector(".modal_emp");
+        modalContent = document.querySelector(".modal_emp"),
+        btnFormClose = document.querySelector(".btn_form_close");
 
 
     loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
@@ -17,6 +19,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     buttonEmployee.setAttribute("disabled", true);
     startVisibleBtnAdd();
+
+    btnFormClose.addEventListener("click", () =>{
+        modalContent.style.display = 'none';
+    });
 
     buttonTask.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
@@ -38,6 +44,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 modalTitle =  modalContent.querySelector(".modal_emp_title");
                 modalTitle.textContent = "Создание - Сотрудника";
                 modalContent.style.display = 'block';
+                modal_form = document.querySelector(".modal_form");
+
             }
         })
     });
