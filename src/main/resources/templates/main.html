@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
     <meta charset="UTF-8"> <!-- Кодировка нашей страницы -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Для своместимости с IE -->
@@ -69,39 +69,73 @@
     <!--        </tr>-->
 
 </div>
-<div class="modal_emp">
+<div class="modal_emp modal">
     <div class="modal_dialog">
         <div class="modal_content">
             <form action="#" class="modal_form">
-                <div class="modal_emp_title">Редактирование -</div>
-<!--                Сделать таблицу-->
+                <div class="modal_emp_title modal_title">Редактирование -</div>
+                <!--                Сделать таблицу-->
                 <table class="modal_table">
                     <tr>
-                        <td><div class="title">ФИО</div></td>
+                        <td>
+                            <div class="title">ФИО</div>
+                        </td>
                         <td><input required placeholder="ФИО" name="full_name" type="text" class="fio_input two"></td>
                     </tr>
                     <tr>
-                        <td><div class="title">Руководитель</div></td>
-                        <td><select name="emp_id" id="1" class="leader_select two"></select></td>
+                        <td>
+                            <div class="title">Руководитель</div>
+                        </td>
+                        <td>
+                            <select name="emp_id" class="leader_select two"></select>
+                        </td>
                     </tr>
                     <tr>
-                        <td> <snap class="title">Филлиал</snap></td>
-                        <td> <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input two"></td>
+                        <td>
+                            <snap class="title">Филиал</snap>
+                        </td>
+                        <td><input required placeholder="Филиал" name="full_name" type="text" class="branch_input two">
+                        </td>
                     </tr>
                 </table>
-<!--                <div class="modals_block">-->
-<!--                    <div class="title">ФИО</div>-->
-<!--                    <input required placeholder="ФИО" name="full_name" type="text" class="fio_input">-->
-<!--                </div>-->
-<!--                <div class="modals_block">-->
-<!--                    <div class="title">Руководитель</div>-->
-<!--                    <select name="emp_id" id="1" class="leader_select"></select>-->
-<!--                </div>-->
-<!--                <div class="modals_block">-->
-<!--                    <snap class="title">Филлиал</snap>-->
-<!--                    <input required placeholder="Филлиал" name="full_name" type="text" class="branch_input">-->
-<!--                </div>-->
+                <div class="btn_modal">
+                    <button class="btn_form_delete this_btn_modal">Удалить</button>
+                    <button class="btn_form_close this_btn_modal">Отмена</button>
+                    <button class="btn_form_save this_btn_modal">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
+<div class="modal_task modal">
+    <div class="modal_dialog">
+        <div class="modal_content">
+            <form action="#" class="modal_form">
+                <div class="modal_task_title modal_title">Редактирование -</div>
+                <!--                Сделать таблицу-->
+                <table class="modal_table">
+                    <tr>
+                        <td class="title_desc">
+                            <div class="title ">Описание</div>
+                        </td>
+                        <td><textarea required placeholder="Описание" name="full_name" type="text"
+                                      class="description_input two"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="title">Ответственный</div>
+                        </td>
+                        <td><select name="task_id" class="leader_select two"></select></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <snap class="title">Филиал</snap>
+                        </td>
+                        <td><input required placeholder="Филиал" name="full_name" type="text" class="branch_input two">
+                        </td>
+                    </tr>
+                </table>
                 <div class="btn_modal">
                     <button class="btn_form_delete this_btn_modal">Удалить</button>
                     <button class="btn_form_close this_btn_modal">Отмена</button>

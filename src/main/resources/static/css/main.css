@@ -87,17 +87,24 @@ body {
     height: 12px;
 }
 
-.modal_emp {
+.modal{
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1050;
-    display: none;
     width: 100%;
     height: 100%;
     overflow: hidden;
     background-color: rgba(0, 0, 0, .5)
 }
+
+.modal_emp {
+    display: none;
+}
+.modal_task {
+    display: none;
+}
+
 
 .modal_dialog {
     max-width: 100%;
@@ -119,7 +126,7 @@ body {
     overflow-y: auto
 }
 
-.modal_emp_title {
+.modal_title {
     text-align: center;
     font-size: 24px;
     font-weight: 900;
@@ -154,17 +161,28 @@ body {
 
 
 
-.modal_emp .title {
+.modal .title {
     font-size: 20px;
     font-weight: 900;
 }
 
 .modal_table{
-    margin-top: 20px;
+    width: 100%;
     border-top: 25px;
     border-right: 60px;
     border-spacing: 25px 35px;
 }
 
+.description_input{
+    width: 100%;
+    height: 70px;
+}
+
+.modal_table input{
+    width: 100%;
+}
+.modal_task .title_desc{
+    vertical-align: top;
+}
 
 

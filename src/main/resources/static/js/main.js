@@ -9,8 +9,9 @@ window.addEventListener("DOMContentLoaded", () => {
         btnAdd = document.querySelectorAll(".btn_add"),
         btnAddEmp = document.querySelector(".btn_add_emp"),
         btnAddTask = document.querySelector(".btn_add_task"),
-        modalContent = document.querySelector(".modal_emp"),
-        btnFormClose = document.querySelector(".btn_form_close");
+        modalEmp = document.querySelector(".modal_emp"),
+        modalTask = document.querySelector(".modal_task"),
+        btnFormClose = document.querySelectorAll(".btn_form_close");
 
 
     loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
@@ -20,9 +21,13 @@ window.addEventListener("DOMContentLoaded", () => {
     buttonEmployee.setAttribute("disabled", true);
     startVisibleBtnAdd();
 
-    btnFormClose.addEventListener("click", () =>{
-        modalContent.style.display = 'none';
+    btnFormClose.forEach((item) => {
+        item.addEventListener("click", () => {
+            modalEmp.style.display = 'none';
+            modalTask.style.display = 'none';
+        });
     });
+
 
     buttonTask.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
@@ -38,17 +43,34 @@ window.addEventListener("DOMContentLoaded", () => {
         reverseVisibleBtnAdd(btnAddEmp, btnAddTask);
     });
 
-    btnAdd.forEach((item, i)=>{
-        item.addEventListener('click', ()=>{
-            if(i === 0){
-                modalTitle =  modalContent.querySelector(".modal_emp_title");
+    btnAdd.forEach((item, i) => {
+        item.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target && target.classList.contains("btn_add_emp")) {
+                let modalTitle = modalEmp.querySelector(".modal_emp_title");
                 modalTitle.textContent = "Создание - Сотрудника";
-                modalContent.style.display = 'block';
-                modal_form = document.querySelector(".modal_form");
-
+                modalEmp.style.display = 'block';
+                selector(".modal_emp");
+            } else if (target && target.classList.contains("btn_add_task")) {
+                modalTitle = modalTask.querySelector(".modal_task_title");
+                modalTitle.textContent = "Создание - Задачи";
+                modalTask.style.display = 'block';
+                selector(".modal_task");
             }
         })
     });
+
+
+    function selector(nameModal) {
+        $(document).ready(function () {
+            $.get(urlBase + "/api/allEmployees", function (data) {
+                data.forEach(item =>{
+                    document.querySelector(nameModal+" .leader_select")
+                        .insertAdjacentHTML('beforeend',`<option value='${item.id}'>${item.full_name}</option>`);
+                });
+            });
+        });
+    }
 
     function reverseVisibleBtnAdd(btnVisible, btnInvisible) {
         btnInvisible.classList.add('hide');
