@@ -27,7 +27,7 @@ body {
 
 .btn_title {
     padding: 4px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -87,7 +87,7 @@ body {
     height: 12px;
 }
 
-.modal{
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -101,10 +101,10 @@ body {
 .modal_emp {
     display: none;
 }
+
 .modal_task {
     display: none;
 }
-
 
 .modal_dialog {
     max-width: 100%;
@@ -133,56 +133,73 @@ body {
 }
 
 
-.this_btn_modal{
-    font-size: 17px;
+.this_btn_modal {
+    font-size: 14px;
     font-weight: 900;
     color: white;
     padding: 5px;
     border-radius: 5px;
 }
+
 .btn_modal {
     position: absolute;
     bottom: 30px;
     width: 514px;
 }
-.btn_modal .btn_form_delete{
+
+.btn_modal .btn_form_delete {
     background-color: red;
 }
-.btn_modal .btn_form_close{
+
+.btn_modal .btn_form_close {
     position: absolute;
     background-color: red;
     right: 140px;
 }
-.btn_modal .btn_form_save{
+
+.btn_modal .btn_form_save {
     position: absolute;
     background-color: green;
     right: 0;
 }
 
-
+.modal input {
+    font-size: 14px;
+    width: 100%;
+    padding: 5px;
+}
 
 .modal .title {
     font-size: 20px;
     font-weight: 900;
 }
 
-.modal_table{
+.modal_table {
     width: 100%;
     border-top: 25px;
     border-right: 60px;
     border-spacing: 25px 35px;
 }
 
-.description_input{
+.description_input {
     width: 100%;
     height: 70px;
+    font-size: 14px;
+    padding: 5px;
 }
 
-.modal_table input{
-    width: 100%;
-}
-.modal_task .title_desc{
+
+.modal_task .title_desc {
     vertical-align: top;
+}
+
+.leader_select {
+    padding: 5px;
+    font-size: 14px;
+}
+
+#form_numb {
+    width: 50px;
 }
 
 

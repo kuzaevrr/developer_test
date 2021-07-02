@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="div_table">
-        <table class="table_emps table">
+        <table class="table_emps table" id="tb_emp">
             <tr class="table_tr_root">
                 <th class="table_th">ID
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
@@ -39,13 +39,13 @@
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
                 <th class="table_th">Руководитель
                     <img class="image_sort" src="/images/sort.png" alt=""/></th>
-                <th class="table_th">Филиал
+                <th class="table_th" >Филиал
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
                 <th class="table_th">Количество задач
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
             </tr>
         </table>
-        <table class="table_tasks table hide">
+        <table class="table_tasks table hide" id="tb_task">
             <tr class="table_tr_root">
                 <th class="table_th">ID
                     <img class="image_sort" src="images/sort.png" alt=""/></th>
@@ -69,10 +69,10 @@
     <!--        </tr>-->
 
 </div>
-<div class="modal_emp modal">
+<div class="modal modal_emp" >
     <div class="modal_dialog">
         <div class="modal_content">
-            <form action="#" class="modal_form">
+            <form action="#" class="modal_form" name="emp">
                 <div class="modal_emp_title modal_title">Редактирование -</div>
                 <!--                Сделать таблицу-->
                 <table class="modal_table">
@@ -94,7 +94,7 @@
                         <td>
                             <snap class="title">Филиал</snap>
                         </td>
-                        <td><input required placeholder="Филиал" name="full_name" type="text" class="branch_input two">
+                        <td><input required placeholder="Филиал" name="branch" type="text" class="branch_input two">
                         </td>
                     </tr>
                 </table>
@@ -108,10 +108,10 @@
     </div>
 </div>
 
-<div class="modal_task modal">
+<div class="modal modal_task">
     <div class="modal_dialog">
         <div class="modal_content">
-            <form action="#" class="modal_form">
+            <form action="#" class="modal_form" name="task">
                 <div class="modal_task_title modal_title">Редактирование -</div>
                 <!--                Сделать таблицу-->
                 <table class="modal_table">
@@ -119,20 +119,20 @@
                         <td class="title_desc">
                             <div class="title ">Описание</div>
                         </td>
-                        <td><textarea required placeholder="Описание" name="full_name" type="text"
+                        <td><textarea required placeholder="Описание" name="description" type="text"
                                       class="description_input two"></textarea></td>
                     </tr>
                     <tr>
                         <td>
                             <div class="title">Ответственный</div>
                         </td>
-                        <td><select name="task_id" class="leader_select two"></select></td>
+                        <td><select name="emp_id" class="leader_select two"></select></td>
                     </tr>
                     <tr>
                         <td>
-                            <snap class="title">Филиал</snap>
+                            <snap class="title">Приоритет</snap>
                         </td>
-                        <td><input required placeholder="Филиал" name="full_name" type="text" class="branch_input two">
+                        <td><input id="form_numb" type="number" name="priority" value="1" min="1" max="9" step="1" onkeypress="return false">
                         </td>
                     </tr>
                 </table>

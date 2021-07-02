@@ -6,17 +6,47 @@ window.addEventListener("DOMContentLoaded", () => {
         tableEmp = document.querySelector(".table_emps"),
         tableTask = document.querySelector(".table_tasks"),
         urlBase = "http://localhost:8080",
+
         btnAdd = document.querySelectorAll(".btn_add"),
         btnAddEmp = document.querySelector(".btn_add_emp"),
         btnAddTask = document.querySelector(".btn_add_task"),
+
         modalEmp = document.querySelector(".modal_emp"),
         modalTask = document.querySelector(".modal_task"),
+
         btnFormClose = document.querySelectorAll(".btn_form_close");
 
+        let dataObj = null;
 
+
+    //load table
     loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
-    clickable_sort(document.querySelectorAll(".table"),
+
+    clickableSort(document.querySelectorAll(".table"),
         document.querySelectorAll(".image_sort"));
+
+
+    //Редактирование сотрудника
+    const tab_emp = document.querySelector('#tb_emp');
+    tab_emp.onclick = function(event){
+        if (event.target.nodeName != 'A') return;
+
+        let href = event.target.getAttribute('href');
+        console.log( href ); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+
+        return false;
+    };
+
+    //Редактирование задачи
+    const tab_task = document.querySelector('#tb_task');
+    tab_task.onclick = function(event){
+        if (event.target.nodeName != 'A') return;
+
+        let href = event.target.getAttribute('href');
+        console.log( href ); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+
+        return false;
+    };
 
     buttonEmployee.setAttribute("disabled", true);
     startVisibleBtnAdd();
@@ -25,15 +55,16 @@ window.addEventListener("DOMContentLoaded", () => {
         item.addEventListener("click", () => {
             modalEmp.style.display = 'none';
             modalTask.style.display = 'none';
+            document.body.style.overflow = '';
         });
     });
-
 
     buttonTask.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddTask, btnAddEmp);
+        document.body.style.overflow = 'hidden';
     });
 
     buttonEmployee.addEventListener("click", () => {
@@ -41,6 +72,7 @@ window.addEventListener("DOMContentLoaded", () => {
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddEmp, btnAddTask);
+        document.body.style.overflow = 'hidden';
     });
 
     btnAdd.forEach((item, i) => {
@@ -64,9 +96,12 @@ window.addEventListener("DOMContentLoaded", () => {
     function selector(nameModal) {
         $(document).ready(function () {
             $.get(urlBase + "/api/allEmployees", function (data) {
+                let leaderSelect = document.querySelector(nameModal+" .leader_select");
+                leaderSelect.innerHTML ="";
                 data.forEach(item =>{
-                    document.querySelector(nameModal+" .leader_select")
-                        .insertAdjacentHTML('beforeend',`<option value='${item.id}'>${item.full_name}</option>`);
+
+
+                    leaderSelect.insertAdjacentHTML('beforeend',`<option value='${item.id}'>${item.full_name}</option>`);
                 });
             });
         });
@@ -84,7 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
         btnAddEmp.classList.add('show');
     }
 
-    function clickable_sort(buttonTable, buttonSort) {
+    function clickableSort(buttonTable, buttonSort) {
         buttonTable.forEach(item => {
             let length = 1;
             let numb = [];
@@ -147,6 +182,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function createTable(data, tableName) {
+
         let docRemove = document.querySelectorAll("." + tableName + " .table_tr");
         if (docRemove != null) {
             docRemove.forEach(item => {
@@ -166,7 +202,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 table +=
                     "<tr class=\"table_tr\">" +
                     "<td class=\"table_th\">" + item.id + "</td>" +
-                    "<td class=\"table_th\">" + item.full_name + "</td>" +
+                    "<td class=\"table_th\"><a href='"+item.id+"' onclick='return false'>" + item.full_name + "</a></td>" +
                     "<td class=\"table_th\">" + item.leaderName + "</td>" +
                     "<td class=\"table_th\">" + item.branch_name + "</td>" +
                     "<td class=\"table_th\">" + item.numberTasks + "</td>" +
@@ -177,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 table +=
                     "<tr class=\"table_tr\">" +
                     "<td class=\"table_th\">" + item.id + "</td>" +
-                    "<td class=\"table_th\">" + item.description + "</td>" +
+                    "<td class=\"table_th\"><a href='"+item.id+"' onclick='return false'>" + item.description + "</a></td>" +
                     "<td class=\"table_th\">" + item.nameEmployee + "</td>" +
                     "<td class=\"table_th\">" + item.priority + "</td>" +
                     "</tr>";
@@ -190,6 +226,7 @@ window.addEventListener("DOMContentLoaded", () => {
     function loadAndCreateTable(url, tableName) {
         $(document).ready(function () {
             $.get(url, function (data) {
+                dataObj = data;
                 createTable(data, tableName);
             });
         });
