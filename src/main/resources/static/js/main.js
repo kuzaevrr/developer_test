@@ -1,4 +1,5 @@
-// noinspection BadExpressionStatementJS
+'use strict';
+
 window.addEventListener("DOMContentLoaded", () => {
 
     const buttonTask = document.querySelector(".btn_task "),
@@ -16,7 +17,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
         btnFormClose = document.querySelectorAll(".btn_form_close");
 
-        let dataObj = null;
+    let arrEmployees = [],
+        arrTasks = [];
 
 
     //load table
@@ -28,22 +30,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
     //Редактирование сотрудника
     const tab_emp = document.querySelector('#tb_emp');
-    tab_emp.onclick = function(event){
-        if (event.target.nodeName != 'A') return;
+    tab_emp.onclick = function (event) {
+        if (event.target.nodeName !== 'A') return;
 
         let href = event.target.getAttribute('href');
-        console.log( href ); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+        console.log(href); // может быть подгрузка с сервера, генерация интерфейса и т.п.
 
         return false;
     };
 
     //Редактирование задачи
     const tab_task = document.querySelector('#tb_task');
-    tab_task.onclick = function(event){
-        if (event.target.nodeName != 'A') return;
+    tab_task.onclick = function (event) {
+        if (event.target.nodeName !== 'A') return;
 
         let href = event.target.getAttribute('href');
-        console.log( href ); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+        console.log(href); // может быть подгрузка с сервера, генерация интерфейса и т.п.
 
         return false;
     };
@@ -78,8 +80,9 @@ window.addEventListener("DOMContentLoaded", () => {
     btnAdd.forEach((item, i) => {
         item.addEventListener('click', (e) => {
             const target = e.target;
+            let modalTitle;
             if (target && target.classList.contains("btn_add_emp")) {
-                let modalTitle = modalEmp.querySelector(".modal_emp_title");
+                modalTitle = modalEmp.querySelector(".modal_emp_title");
                 modalTitle.textContent = "Создание - Сотрудника";
                 modalEmp.style.display = 'block';
                 selector(".modal_emp");
@@ -94,17 +97,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     function selector(nameModal) {
-        $(document).ready(function () {
-            $.get(urlBase + "/api/allEmployees", function (data) {
-                let leaderSelect = document.querySelector(nameModal+" .leader_select");
-                leaderSelect.innerHTML ="";
-                data.forEach(item =>{
+        // $(document).ready(function () {
+        //     $.get(urlBase + "/api/allEmployees", function (data) {
+        let leaderSelect = document.querySelector(nameModal + " .leader_select");
+        leaderSelect.innerHTML = "";
+        arrEmployees.forEach(item => {
 
 
-                    leaderSelect.insertAdjacentHTML('beforeend',`<option value='${item.id}'>${item.full_name}</option>`);
-                });
-            });
+            leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
         });
+        //     });
+        // });
     }
 
     function reverseVisibleBtnAdd(btnVisible, btnInvisible) {
@@ -196,27 +199,39 @@ window.addEventListener("DOMContentLoaded", () => {
             if (tableName === "table_emps") {
 
                 visible(true);
-                if (item.leaderName == null) {
-                    item.leaderName = "";
+                if (item.leader == null) {
+                    item.leader = "";
+                } else {
+                    data.forEach(itemData => {
+                        if (itemData.id === item.leader){
+                            item.leader = itemData.fullName;
+                        }
+                    });
                 }
                 table +=
-                    "<tr class=\"table_tr\">" +
-                    "<td class=\"table_th\">" + item.id + "</td>" +
-                    "<td class=\"table_th\"><a href='"+item.id+"' onclick='return false'>" + item.full_name + "</a></td>" +
-                    "<td class=\"table_th\">" + item.leaderName + "</td>" +
-                    "<td class=\"table_th\">" + item.branch_name + "</td>" +
-                    "<td class=\"table_th\">" + item.numberTasks + "</td>" +
-                    "</tr>";
+                    `<tr class='table_tr'>
+                    <td class='table_th'>${item.id}</td>
+                    <td class='table_th'><a href='${item.id}' onclick='return false'>${item.fullName}</a></td>
+                    <td class='table_th'>${item.leader}</td>
+                    <td class='table_th'>${item.branchName}</td>
+                    <td class='table_th'>${item.numberTasks}</td>
+                    </tr>`;
             } else if (tableName === "table_tasks") {
+
+                arrEmployees.forEach(itemData => {
+                    if (itemData.id === item.employeeId){
+                        item.employeeId = itemData.fullName;
+                    }
+                });
 
                 visible(false);
                 table +=
-                    "<tr class=\"table_tr\">" +
-                    "<td class=\"table_th\">" + item.id + "</td>" +
-                    "<td class=\"table_th\"><a href='"+item.id+"' onclick='return false'>" + item.description + "</a></td>" +
-                    "<td class=\"table_th\">" + item.nameEmployee + "</td>" +
-                    "<td class=\"table_th\">" + item.priority + "</td>" +
-                    "</tr>";
+                    `<tr class='table_tr'> 
+                    <td class='table_th'>${item.id}</td> 
+                    <td class='table_th'><a href='${item.id}' onclick='return false'>${item.description}</a></td>
+                    <td class='table_th'>${item.employeeId}</td>
+                    <td class='table_th'>${item.priority}</td>
+                    </tr>`;
             }
         });
         document.querySelector("." + tableName).insertAdjacentHTML("beforeEnd", table);
@@ -226,8 +241,24 @@ window.addEventListener("DOMContentLoaded", () => {
     function loadAndCreateTable(url, tableName) {
         $(document).ready(function () {
             $.get(url, function (data) {
-                dataObj = data;
-                createTable(data, tableName);
+                // console.log(data);
+                if (tableName.indexOf('emps') > 0) {
+                    // arrEmployees = JSON.parse(JSON.stringify(data));
+                    arrEmployees = [];
+                    data.forEach(item => {
+
+                        arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks));
+                    });
+                    console.log(arrEmployees);
+                    createTable(arrEmployees, tableName);
+                } else if (tableName.indexOf('tasks') > 0) {
+                    arrTasks = [];
+                    data.forEach(item => {
+                        arrTasks.push(new Task(item.id, item.description, item.employeeId, item.priority));
+                    });
+                    createTable(arrTasks, tableName);
+                }
+
             });
         });
     }
@@ -239,6 +270,27 @@ window.addEventListener("DOMContentLoaded", () => {
         tableEmp.classList.remove(arr[+bool]);
         tableTask.classList.add(arr[+bool]);
     }
+
+
+    class Task {
+        constructor(id, description, employeeId, priority) {
+            this.id = id;
+            this.description = description;
+            this.employeeId = employeeId;
+            this.priority = priority;
+        }
+    }
+
+    class Employee {
+        constructor(id, fullName, leader, branchName, numberTasks) {
+            this.id = id;
+            this.fullName = fullName;
+            this.leader = leader;
+            this.branchName = branchName;
+            this.numberTasks = numberTasks;
+        }
+    }
+
 
 });
 

@@ -46,9 +46,9 @@ public class EmployeesRepositoryImpl
     public void setEmployee(Employee employee) {
 
         dsl.insertInto(Employees.EMPLOYEES)
-                .set(Employees.EMPLOYEES.FULL_NAME, employee.getFull_name())
+                .set(Employees.EMPLOYEES.FULL_NAME, employee.getFullName())
                 .set(Employees.EMPLOYEES.LEADER, employee.getLeader())
-                .set(Employees.EMPLOYEES.BRANCH_NAME, employee.getBranch_name())
+                .set(Employees.EMPLOYEES.BRANCH_NAME, employee.getBranchName())
                 .returning(Employees.EMPLOYEES.ID)
                 .fetchOne();
     }

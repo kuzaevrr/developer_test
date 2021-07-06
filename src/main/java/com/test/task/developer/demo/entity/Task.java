@@ -5,30 +5,30 @@ public class Task {
     Integer id;
     Integer priority;
     String description;
-    Integer employee_id;
+    Integer employeeId;
 
-    String nameEmployee;
+//    String nameEmployee;
 
-    public Task(Integer priority, String description, Integer employee_id) {
+    public Task(Integer priority, String description, Integer employeeId) {
         this.priority = priority;
         this.description = description;
-        this.employee_id = employee_id;
+        this.employeeId = employeeId;
     }
 
-    public Task(Integer id, Integer priority, String description, Integer employee_id) {
+    public Task(Integer id, Integer priority, String description, Integer employeeId) {
         this.id = id;
         this.priority = priority;
         this.description = description;
-        this.employee_id = employee_id;
+        this.employeeId = employeeId;
     }
 
-    public String getNameEmployee() {
-        return nameEmployee;
-    }
-
-    public void setNameEmployee(String nameEmployee) {
-        this.nameEmployee = nameEmployee;
-    }
+//    public String getNameEmployee() {
+//        return nameEmployee;
+//    }
+//
+//    public void setNameEmployee(String nameEmployee) {
+//        this.nameEmployee = nameEmployee;
+//    }
 
     public Integer getId() {
         return id;
@@ -54,21 +54,21 @@ public class Task {
         this.description = description;
     }
 
-    public Integer getEmployee_id() {
-        return employee_id;
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
     public void setEmployee_id(Integer employee_id) {
-        this.employee_id = employee_id;
+        this.employeeId = employeeId;
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
-                ", priority=" + priority +
-                ", description='" + description + '\'' +
-                ", employee_id=" + employee_id +
+                "id=" + this.id +
+                ", priority=" + this.priority +
+                ", description='" + this.description + '\'' +
+                ", employee_id=" + this.employeeId +
                 '}';
     }
 }

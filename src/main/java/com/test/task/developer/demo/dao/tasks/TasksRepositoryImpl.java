@@ -1,6 +1,5 @@
 package com.test.task.developer.demo.dao.tasks;
 
-import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
 import com.test.task.developer.demo.entity.Task;
 import org.jooq.DSLContext;
@@ -48,7 +47,7 @@ public class TasksRepositoryImpl
         dsl.insertInto(Tasks.TASKS)
                 .set(Tasks.TASKS.PRIORITY, task.getPriority())
                 .set(Tasks.TASKS.DESCRIPTION, task.getDescription())
-                .set(Tasks.TASKS.EMPLOYEE_ID, task.getEmployee_id())
+                .set(Tasks.TASKS.EMPLOYEE_ID, task.getEmployeeId())
                 .returning(Tasks.TASKS.ID)
                 .fetchOne();
     }

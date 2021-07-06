@@ -23,9 +23,9 @@ class DeveloperTestApplicationTests {
     @Test
     void setEmployees() {
         Employee employee = new Employee();
-        employee.setFull_name("Масимов Максим Масимович");
+        employee.setFullName("Масимов Максим Масимович");
 //        employee.setLeader(1);
-        employee.setBranch_name("ProIT");
+        employee.setBranchName("ProIT");
         service.setEmployee(employee);
         System.out.println(employee);
     }

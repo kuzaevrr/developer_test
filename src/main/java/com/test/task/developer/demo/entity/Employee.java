@@ -3,33 +3,24 @@ package com.test.task.developer.demo.entity;
 public class Employee {
 
     Integer id;
-    String full_name;
+    String fullName;
     Integer leader;
-    String branch_name;
-
+    String branchName;
     Integer numberTasks;
-    String leaderName;
 
-    public Employee(String full_name, Integer leader,  String branch_name) {
-        this.full_name = full_name;
+    public Employee(String fullName, Integer leader,  String branchName) {
+        this.fullName = fullName;
         this.leader = leader;
-        this.branch_name = branch_name;
+        this.branchName = branchName;
     }
 
-    public Employee(Integer id, String full_name, Integer leader, String branch_name) {
+    public Employee(Integer id, String fullName, Integer leader, String branchName) {
         this.id = id;
-        this.full_name = full_name;
+        this.fullName = fullName;
         this.leader = leader;
-        this.branch_name = branch_name;
+        this.branchName = branchName;
     }
 
-    public String getLeaderName() {
-        return leaderName;
-    }
-
-    public void setLeaderName(String leaderName) {
-        this.leaderName = leaderName;
-    }
 
     public Integer getNumberTasks() {
         return numberTasks;
@@ -47,12 +38,12 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Integer getLeader() {
@@ -64,12 +55,12 @@ public class Employee {
     }
 
 
-    public String getBranch_name() {
-        return branch_name;
+    public String getBranchName() {
+        return branchName;
     }
 
-    public void setBranch_name(String branch_name) {
-        this.branch_name = branch_name;
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public Employee() {
@@ -79,10 +70,10 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "id=" + id +
-                ", full_name='" + full_name + '\'' +
-                ", leader=" + leader +
-                ", branch_name='" + branch_name + '\'' +
+                "id=" + this.id +
+                ", full_name='" + this.fullName + '\'' +
+                ", leader=" + this.leader +
+                ", branch_name='" + this.branchName + '\'' +
                 '}';
     }
 }

@@ -30,14 +30,8 @@ public class ApiController {
         for(Employee employee: employeeList) {
             int numberTasks =0;
             for (Task task : tasks) {
-                if (task.getEmployee_id() == employee.getId()){
+                if (task.getEmployeeId() == employee.getId()){
                     numberTasks++;
-                }
-            }
-            for(Employee employee2: employeeList) {
-                if (employee.getLeader() == employee2.getId()){
-                    employee.setLeaderName(employee2.getFull_name());
-                    break;
                 }
             }
             employee.setNumberTasks(numberTasks);
@@ -49,16 +43,6 @@ public class ApiController {
     @GetMapping("/allTasks")
     public List<Task> getAllTasks(){
         List<Task> tasks = service.allTasks();
-        List<Employee> employeeList = service.allEmployees();
-
-        for(Task task: tasks){
-            for(Employee employee: employeeList){
-                if(task.getEmployee_id() == employee.getId()){
-                    task.setNameEmployee(employee.getFull_name());
-                    break;
-                }
-            }
-        }
         tasks.sort(new Comparator<Task>() {
             @Override
             public int compare(Task task, Task t1) {
