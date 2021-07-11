@@ -14,8 +14,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
         modalEmp = document.querySelector(".modal_emp"),
         modalTask = document.querySelector(".modal_task"),
+        table = document.querySelectorAll('.table'),
+        btnFormClose = document.querySelectorAll(".btn_form_close"),
+        form = document.querySelectorAll('form');
 
-        btnFormClose = document.querySelectorAll(".btn_form_close");
+    form.forEach((item) => {
+        item.addEventListener('submit', (e) => {
+            e.preventDefault();
+        });
+    });
 
     let arrEmployees = [],
         arrTasks = [];
@@ -24,31 +31,60 @@ window.addEventListener("DOMContentLoaded", () => {
     //load table
     loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
 
-    clickableSort(document.querySelectorAll(".table"),
+    clickableSort(table,
         document.querySelectorAll(".image_sort"));
 
 
     //Редактирование сотрудника
-    const tab_emp = document.querySelector('#tb_emp');
-    tab_emp.onclick = function (event) {
-        if (event.target.nodeName !== 'A') return;
+    const tab_emp = document.querySelector('#tb_emp'),
+        tab_task = document.querySelector('#tb_task');
 
-        let href = event.target.getAttribute('href');
-        console.log(href); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+    table.forEach(item => {
+        item.onclick = function (event) {
+            if (event.target.nodeName !== 'A') return;
+            let urlPlus;
+            let id = event.target.getAttribute('href');
+            let resultObj;
+            if (item.contains(tab_emp)) {
+                urlPlus = `/api/getEmployee/${id}`;
+            } else if (item.contains(tab_task)) {
+                urlPlus = `/api/getTask/${id}`;
+            }
+            const request = new XMLHttpRequest;
+            request.open('GET', urlBase + urlPlus);
+            request.send();
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    let object = JSON.parse(request.response);
+                    if (item.contains(tab_emp)) {
+                        resultObj = new Employee(
+                            object.id,
+                            object.fullName,
+                            object.leader,
+                            object.branchName,
+                            object.numberTasks);
+                    } else if (item.contains(tab_task)) {
+                        resultObj = new Task(
+                            object.id,
+                            object.description,
+                            object.employeeId,
+                            object.priority);
+                    }
+                    showModalForm(item, resultObj);
+                    console.log(`Employees -> ${resultObj instanceof Employee} \n
+                                Task -> ${resultObj instanceof Task}`);
+                } else {
 
-        return false;
-    };
+                }
+            });
+            // console.log(href); // может быть подгрузка с сервера, генерация интерфейса и т.п.
+            return false;
+        };
+    });
+
 
     //Редактирование задачи
-    const tab_task = document.querySelector('#tb_task');
-    tab_task.onclick = function (event) {
-        if (event.target.nodeName !== 'A') return;
 
-        let href = event.target.getAttribute('href');
-        console.log(href); // может быть подгрузка с сервера, генерация интерфейса и т.п.
-
-        return false;
-    };
 
     buttonEmployee.setAttribute("disabled", true);
     startVisibleBtnAdd();
@@ -66,7 +102,7 @@ window.addEventListener("DOMContentLoaded", () => {
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddTask, btnAddEmp);
-        document.body.style.overflow = 'hidden';
+        // document.body.style.overflow = 'hidden';
     });
 
     buttonEmployee.addEventListener("click", () => {
@@ -74,35 +110,63 @@ window.addEventListener("DOMContentLoaded", () => {
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddEmp, btnAddTask);
-        document.body.style.overflow = 'hidden';
+        // document.body.style.overflow = 'hidden';
     });
 
-    btnAdd.forEach((item, i) => {
+    btnAdd.forEach((item) => {
         item.addEventListener('click', (e) => {
-            const target = e.target;
-            let modalTitle;
-            if (target && target.classList.contains("btn_add_emp")) {
-                modalTitle = modalEmp.querySelector(".modal_emp_title");
-                modalTitle.textContent = "Создание - Сотрудника";
-                modalEmp.style.display = 'block';
-                selector(".modal_emp");
-            } else if (target && target.classList.contains("btn_add_task")) {
-                modalTitle = modalTask.querySelector(".modal_task_title");
-                modalTitle.textContent = "Создание - Задачи";
-                modalTask.style.display = 'block';
-                selector(".modal_task");
-            }
-        })
+            showModalForm(e);
+        });
     });
 
+    function showModalForm(e, ...p) {
+
+        const target = e.target;
+        let modalTitle;
+        let list = {
+            create: 'Создание',
+            edit: 'Редактирование'
+        };
+        const formEmp = document.forms.emp;
+        const formTask = document.forms.task;
+        formEmp.reset();
+        formTask.reset();
+        if (target && target.classList.contains("btn_add_emp") || p[0] instanceof Employee) {
+            modalTitle = modalEmp.querySelector(".modal_emp_title");
+            selector(".modal_emp");
+
+            if (p.length !== 0) {
+                modalTitle.textContent = `${list.edit} - Сотрудника #${p[0].id}`;
+                formEmp.elements.full_name.value = p[0].fullName;
+                if(p[0].leader !== null)  document.querySelector(`.modal_emp select option[value='${p[0].leader}']`).selected = true;
+                formEmp.elements.branch.value = p[0].branchName;
+            } else {
+                modalTitle.textContent = `${list.create} - Сотрудника`;
+            }
+            modalEmp.style.display = 'block';
+
+        } else if (target && target.classList.contains("btn_add_task") || p[0] instanceof Task) {
+            selector(".modal_task");
+            modalTitle = modalTask.querySelector(".modal_task_title");
+            if (p.length !== 0) {
+                modalTitle.textContent = `${list.edit} - Задачи #${p[0].id}`;
+                formTask.elements.description.value = p[0].description;
+                if(p[0].employeeId !== null)   document.querySelector(`.modal_task select option[value='${p[0].employeeId}']`).selected = true;
+                formTask.elements.priority.value = p[0].priority;
+            } else {
+                modalTitle.textContent = `${list.create} - Задачи`;
+            }
+            modalTask.style.display = 'block';
+
+        }
+    }
 
     function selector(nameModal) {
-        // $(document).ready(function () {
-        //     $.get(urlBase + "/api/allEmployees", function (data) {
+
         let leaderSelect = document.querySelector(nameModal + " .leader_select");
         leaderSelect.innerHTML = "";
+        leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
         arrEmployees.forEach(item => {
-
 
             leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
         });
@@ -122,6 +186,7 @@ window.addEventListener("DOMContentLoaded", () => {
         btnAddEmp.classList.add('show');
     }
 
+    //Сортировка
     function clickableSort(buttonTable, buttonSort) {
         buttonTable.forEach(item => {
             let length = 1;
@@ -203,7 +268,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     item.leader = "";
                 } else {
                     data.forEach(itemData => {
-                        if (itemData.id === item.leader){
+                        if (itemData.id === item.leader) {
                             item.leader = itemData.fullName;
                         }
                     });
@@ -219,7 +284,7 @@ window.addEventListener("DOMContentLoaded", () => {
             } else if (tableName === "table_tasks") {
 
                 arrEmployees.forEach(itemData => {
-                    if (itemData.id === item.employeeId){
+                    if (itemData.id === item.employeeId) {
                         item.employeeId = itemData.fullName;
                     }
                 });
@@ -279,6 +344,10 @@ window.addEventListener("DOMContentLoaded", () => {
             this.employeeId = employeeId;
             this.priority = priority;
         }
+
+        getString() {
+            return `Task {${this.id}, ${this.description}, ${this.employeeId}, ${this.priority}}`;
+        }
     }
 
     class Employee {
@@ -288,6 +357,10 @@ window.addEventListener("DOMContentLoaded", () => {
             this.leader = leader;
             this.branchName = branchName;
             this.numberTasks = numberTasks;
+        }
+
+        getString() {
+            return `Employee {${this.id}, ${this.fullName}, ${this.leader}, ${this.branchName}, ${this.numberTasks}}`;
         }
     }
 

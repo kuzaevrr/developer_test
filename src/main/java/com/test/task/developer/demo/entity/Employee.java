@@ -2,13 +2,13 @@ package com.test.task.developer.demo.entity;
 
 public class Employee {
 
-    Integer id;
-    String fullName;
-    Integer leader;
-    String branchName;
-    Integer numberTasks;
+    private Integer id;
+    private String fullName;
+    private Integer leader;
+    private String branchName;
+    private Integer numberTasks;
 
-    public Employee(String fullName, Integer leader,  String branchName) {
+    public Employee(String fullName, Integer leader, String branchName) {
         this.fullName = fullName;
         this.leader = leader;
         this.branchName = branchName;

@@ -6,6 +6,7 @@ import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +18,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class ApiController {
 
-    @Autowired
-    private Service service;
+    private final Service service;
+
+    public ApiController(Service service) {
+        this.service = service;
+    }
 
     @GetMapping("/allEmployees")
     public List<Employee> getAllEmployee() {
@@ -51,6 +55,16 @@ public class ApiController {
         }.reversed());
 
         return tasks;
+    }
+
+    @GetMapping("/getTask/{task_id}")
+    public Task getTask(@PathVariable int task_id){
+        return service.getTasksById(task_id);
+    }
+
+    @GetMapping("/getEmployee/{emp_id}")
+    public Employee getEmployee(@PathVariable int emp_id){
+        return service.getEmployeeById(emp_id);
     }
 
     @GetMapping("get_sort_up")

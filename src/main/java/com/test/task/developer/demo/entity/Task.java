@@ -2,12 +2,10 @@ package com.test.task.developer.demo.entity;
 
 public class Task {
 
-    Integer id;
-    Integer priority;
-    String description;
-    Integer employeeId;
-
-//    String nameEmployee;
+    private Integer id;
+    private Integer priority;
+    private String description;
+    private Integer employeeId;
 
     public Task(Integer priority, String description, Integer employeeId) {
         this.priority = priority;
@@ -22,13 +20,6 @@ public class Task {
         this.employeeId = employeeId;
     }
 
-//    public String getNameEmployee() {
-//        return nameEmployee;
-//    }
-//
-//    public void setNameEmployee(String nameEmployee) {
-//        this.nameEmployee = nameEmployee;
-//    }
 
     public Integer getId() {
         return id;
