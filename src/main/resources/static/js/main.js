@@ -18,11 +18,11 @@ window.addEventListener("DOMContentLoaded", () => {
         btnFormClose = document.querySelectorAll(".btn_form_close"),
         form = document.querySelectorAll('form');
 
-    form.forEach((item) => {
-        item.addEventListener('submit', (e) => {
-            e.preventDefault();
-        });
-    });
+    // form.forEach((item) => {
+    //     item.addEventListener('submit', (e) => {
+    //         e.preventDefault();
+    //     });
+    // });
 
     let arrEmployees = [],
         arrTasks = [];
@@ -138,27 +138,78 @@ window.addEventListener("DOMContentLoaded", () => {
             if (p.length !== 0) {
                 modalTitle.textContent = `${list.edit} - Сотрудника #${p[0].id}`;
                 formEmp.elements.full_name.value = p[0].fullName;
-                if(p[0].leader !== null)  document.querySelector(`.modal_emp select option[value='${p[0].leader}']`).selected = true;
+                if (p[0].leader !== null) document.querySelector(`.modal_emp select option[value='${p[0].leader}']`).selected = true;
                 formEmp.elements.branch.value = p[0].branchName;
             } else {
                 modalTitle.textContent = `${list.create} - Сотрудника`;
             }
             modalEmp.style.display = 'block';
-
+            saveEmpAndTask(formEmp, new Employee());
         } else if (target && target.classList.contains("btn_add_task") || p[0] instanceof Task) {
             selector(".modal_task");
             modalTitle = modalTask.querySelector(".modal_task_title");
             if (p.length !== 0) {
                 modalTitle.textContent = `${list.edit} - Задачи #${p[0].id}`;
                 formTask.elements.description.value = p[0].description;
-                if(p[0].employeeId !== null)   document.querySelector(`.modal_task select option[value='${p[0].employeeId}']`).selected = true;
+                if (p[0].employeeId !== null) document.querySelector(`.modal_task select option[value='${p[0].employeeId}']`).selected = true;
                 formTask.elements.priority.value = p[0].priority;
             } else {
                 modalTitle.textContent = `${list.create} - Задачи`;
             }
             modalTask.style.display = 'block';
-
+            saveEmpAndTask(formTask, new Task());
         }
+    }
+
+    function saveEmpAndTask(form, typeObj, ...id) {
+        if (id.length === 0) {
+            id[0] = 0;
+        }
+        console.log('Функция запустилась');
+        form.addEventListener('submit', (e) => {
+            console.log('Обработчик запустился');
+            e.preventDefault();
+            // if(e.target && e.target.classList.contains('btn_form_save')) {
+            if (typeObj instanceof Task) {
+                let select = document.querySelector(".modal_task select");
+                let obj = new Task(
+                    id[0],
+                    form.elements.description.value,
+                    select.options[select.selectedIndex].value,
+                    form.elements.priority.value
+                );
+                if (id.length !== 0) obj.id = id[0];
+                loadSave(obj);
+                console.log('Выполнение логики');
+            } else if (typeObj instanceof Employee) {
+                let select = document.querySelector(".modal_emp select"); // Выбираем  select по id
+                let obj = new Employee(
+                    id[0],
+                    form.elements.full_name.value,
+                    select.options[select.selectedIndex].value,
+                    form.elements.branch.value
+                );
+                if (id.length !== 0) obj.id = id[0];
+                loadSave(obj);
+            }
+
+            // }
+        });
+    }
+
+    function loadSave(obj) {
+        const request = new XMLHttpRequest;
+        request.open('POST', urlBase + '/api/save');
+        request.setRequestHeader('Content-type', 'application/json');
+        const json = JSON.stringify(obj);
+        request.send(json);
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                console.log(request.response);
+            } else {
+                console.log('Error: ' + request.response);
+            }
+        });
     }
 
     function selector(nameModal) {
@@ -167,11 +218,8 @@ window.addEventListener("DOMContentLoaded", () => {
         leaderSelect.innerHTML = "";
         leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
         arrEmployees.forEach(item => {
-
             leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
         });
-        //     });
-        // });
     }
 
     function reverseVisibleBtnAdd(btnVisible, btnInvisible) {
@@ -239,13 +287,8 @@ window.addEventListener("DOMContentLoaded", () => {
         const table_body = document.querySelectorAll('.table_tr');
 
         table_body.forEach((item, i) => {
-            if (i % 2) {
-                //четные
-                item.classList.add("even")
-            } else {
-                //нечетные
-                item.classList.add("odd")
-            }
+            if (i % 2) item.classList.add("even"); //четные
+            else item.classList.add("odd");  //нечетные
         });
     }
 
@@ -260,7 +303,6 @@ window.addEventListener("DOMContentLoaded", () => {
         let table = "";
 
         data.forEach(item => {
-
             if (tableName === "table_emps") {
 
                 visible(true);
@@ -306,9 +348,8 @@ window.addEventListener("DOMContentLoaded", () => {
     function loadAndCreateTable(url, tableName) {
         $(document).ready(function () {
             $.get(url, function (data) {
-                // console.log(data);
                 if (tableName.indexOf('emps') > 0) {
-                    // arrEmployees = JSON.parse(JSON.stringify(data));
+                    // arrEmployees = JSON.parse(JSON.stringify(data)); //глубокое клонирование объекта
                     arrEmployees = [];
                     data.forEach(item => {
 

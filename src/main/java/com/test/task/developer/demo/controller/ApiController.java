@@ -5,10 +5,7 @@ import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,6 +62,13 @@ public class ApiController {
     @GetMapping("/getEmployee/{emp_id}")
     public Employee getEmployee(@PathVariable int emp_id){
         return service.getEmployeeById(emp_id);
+
+    }
+
+    @PostMapping("/save")
+    public Object save(@RequestBody Object object){
+        System.out.println(object.toString());
+        return object;
     }
 
     @GetMapping("get_sort_up")
