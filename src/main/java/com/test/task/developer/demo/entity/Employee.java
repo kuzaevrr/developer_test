@@ -1,6 +1,8 @@
 package com.test.task.developer.demo.entity;
 
-public class Employee {
+import java.util.Comparator;
+
+public class Employee implements Comparable<Employee> {
 
     private Integer id;
     private String fullName;
@@ -75,5 +77,42 @@ public class Employee {
                 ", leader=" + this.leader +
                 ", branch_name='" + this.branchName + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Employee employee) {
+        return this.id.compareTo(employee.id);
+    }
+}
+
+class NameEmployeeComparator implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return o1.getFullName().compareTo(o2.getFullName());
+    }
+}
+
+class LeaderEmployeeComparator implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return o1.getLeader().compareTo(o2.getLeader());
+    }
+}
+
+class BranchNameEmployeeComparator implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return o1.getBranchName().compareTo(o2.getBranchName());
+    }
+}
+
+class NumberTaskEmployeeComparator implements Comparator<Employee> {
+
+    @Override
+    public int compare(Employee o1, Employee o2) {
+        return o1.getNumberTasks().compareTo(o2.getNumberTasks());
     }
 }

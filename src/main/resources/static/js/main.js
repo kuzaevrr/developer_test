@@ -187,6 +187,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 loadAndCreateTable(urlBase + urlApi, tableName);
             } else {
                 console.log('Error');
+                alert( JSON.parse(request.response).info);
             }
         });
     }

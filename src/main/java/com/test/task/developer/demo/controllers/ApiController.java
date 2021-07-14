@@ -1,17 +1,14 @@
-package com.test.task.developer.demo.controller;
+package com.test.task.developer.demo.controllers;
 
 
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static java.sql.Types.NULL;
 
 @RestController
 @RequestMapping("/api")
@@ -69,12 +66,12 @@ public class ApiController {
 
     @PostMapping("/saveEmp")
     public Employee saveEmp(@RequestBody Employee employee){
-        if(employee.getLeader() == 0){
+        if (employee.getLeader() == 0) {
             employee.setLeader(null);
         }
-        if(employee.getId() != 0){
+        if (employee.getId() != 0) {
             service.updateEmployee(employee);
-        }else{
+        } else {
             service.setEmployee(employee);
         }
         return employee;
