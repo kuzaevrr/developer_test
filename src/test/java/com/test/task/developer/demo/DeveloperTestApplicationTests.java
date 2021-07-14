@@ -61,6 +61,7 @@ class DeveloperTestApplicationTests {
     @Test
     void setTask(){
         service.setTask(new Task(
+                null,
                 4,
                 "Обнуление БД",
                 1

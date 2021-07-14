@@ -12,10 +12,12 @@ public interface Service {
     void setEmployee(Employee employee);
     void deleteEmployee(Integer id_employee);
     void deleteAllEmployees();
+    void updateEmployee(Employee employee);
 
     List<Task> allTasks();
     Task getTasksById(Integer id);
     void setTask(Task task);
     void deleteTask(Integer id_employee);
     void deleteAllTasks();
+    void updateTask(Task task);
 }

@@ -7,11 +7,11 @@ public class Task {
     private String description;
     private Integer employeeId;
 
-    public Task(Integer priority, String description, Integer employeeId) {
-        this.priority = priority;
-        this.description = description;
-        this.employeeId = employeeId;
-    }
+//    public Task(Integer priority, String description, Integer employeeId) {
+//        this.priority = priority;
+//        this.description = description;
+//        this.employeeId = employeeId;
+//    }
 
     public Task(Integer id, Integer priority, String description, Integer employeeId) {
         this.id = id;
@@ -49,7 +49,7 @@ public class Task {
         return employeeId;
     }
 
-    public void setEmployee_id(Integer employee_id) {
+    public void setEmployeeId(Integer employee_id) {
         this.employeeId = employeeId;
     }
 

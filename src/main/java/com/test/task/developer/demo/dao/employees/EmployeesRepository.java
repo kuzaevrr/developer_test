@@ -11,4 +11,5 @@ public interface EmployeesRepository {
     void setEmployee(Employee employee);
     void deleteEmployee(Integer id_employee);
     void deleteAllEmployees();
+    void updateEmployee(Employee employee);
 }

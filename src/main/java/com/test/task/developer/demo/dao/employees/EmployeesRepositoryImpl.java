@@ -3,9 +3,11 @@ package com.test.task.developer.demo.dao.employees;
 
 import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.test.task.developer.demo.entity.Employee;
+import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,17 @@ public class EmployeesRepositoryImpl
                 .set(Employees.EMPLOYEES.BRANCH_NAME, employee.getBranchName())
                 .returning(Employees.EMPLOYEES.ID)
                 .fetchOne();
+    }
+
+    @Override
+    public void updateEmployee(Employee employee){
+        dsl.update(Employees.EMPLOYEES)
+                .set(dsl.newRecord(Employees.EMPLOYEES, employee))
+                .where(Employees.EMPLOYEES.ID.eq(employee.getId()))
+                .returning()
+                .fetchOptional()
+                .orElseThrow(() -> new DataAccessException("Error updating entity: " + employee.getId()))
+                .into(Employee.class);
     }
 
     @Override

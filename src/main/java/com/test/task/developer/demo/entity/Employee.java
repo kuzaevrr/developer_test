@@ -8,11 +8,11 @@ public class Employee {
     private String branchName;
     private Integer numberTasks;
 
-    public Employee(String fullName, Integer leader, String branchName) {
-        this.fullName = fullName;
-        this.leader = leader;
-        this.branchName = branchName;
-    }
+//    public Employee(String fullName, Integer leader, String branchName) {
+//        this.fullName = fullName;
+//        this.leader = leader;
+//        this.branchName = branchName;
+//    }
 
     public Employee(Integer id, String fullName, Integer leader, String branchName) {
         this.id = id;

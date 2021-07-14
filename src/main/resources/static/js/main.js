@@ -34,6 +34,8 @@ window.addEventListener("DOMContentLoaded", () => {
     clickableSort(table,
         document.querySelectorAll(".image_sort"));
 
+    buttonEmployee.setAttribute("disabled", true);
+    startVisibleBtnAdd();
 
     //Редактирование сотрудника
     const tab_emp = document.querySelector('#tb_emp'),
@@ -71,8 +73,6 @@ window.addEventListener("DOMContentLoaded", () => {
                             object.priority);
                     }
                     showModalForm(item, resultObj);
-                    console.log(`Employees -> ${resultObj instanceof Employee} \n
-                                Task -> ${resultObj instanceof Task}`);
                 } else {
 
                 }
@@ -86,16 +86,10 @@ window.addEventListener("DOMContentLoaded", () => {
     //Редактирование задачи
 
 
-    buttonEmployee.setAttribute("disabled", true);
-    startVisibleBtnAdd();
-
     btnFormClose.forEach((item) => {
-        item.addEventListener("click", () => {
-            modalEmp.style.display = 'none';
-            modalTask.style.display = 'none';
-            document.body.style.overflow = '';
-        });
+        item.addEventListener("click", closeModal);
     });
+
 
     buttonTask.addEventListener("click", () => {
         loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
@@ -119,6 +113,85 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    function closeModal() {
+        modalEmp.style.display = 'none';
+        modalTask.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    const forms = document.querySelectorAll('form');
+
+    forms.forEach(item => {
+        clickListenerForm(item);
+    });
+
+    function clickListenerForm(item) {
+        item.addEventListener('reset', (e) =>{
+           e.preventDefault();
+            let id = item.querySelector(".modal_title").textContent.split('№')[1];
+            if (document.forms.task === item) {
+                deleteObj(id, new Task())
+            } else if (document.forms.emp === item) {
+                deleteObj(id, new Employee())
+            }
+            closeModal();
+        });
+        item.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let id = item.querySelector(".modal_title").textContent.split('№')[1];
+            if (id === undefined) {
+                id = 0;
+            }
+            if (document.forms.task === item) {
+                let select = document.querySelector(".modal_task select");
+                let obj = new Task(
+                    id,
+                    item.elements.description.value,
+                    select.options[select.selectedIndex].value,
+                    item.elements.priority.value
+                );
+                loadSave(obj);
+
+            } else if (document.forms.emp === item) {
+                let select = document.querySelector(".modal_emp select"); // Выбираем  select по id
+                let obj = new Employee(
+                    id,
+                    item.elements.full_name.value,
+                    select.options[select.selectedIndex].value,
+                    item.elements.branch.value
+                );
+                loadSave(obj);
+            }
+            closeModal();
+        });
+    }
+
+    function deleteObj(id, obj) {
+        const request = new XMLHttpRequest;
+        let urlApi, tableName;
+        if(obj instanceof Employee){
+            urlApi = '/api/allEmployees';
+            tableName = 'table_emps';
+            request.open('POST', urlBase + '/api/deleteEmp');
+        }else if(obj instanceof Task){
+            urlApi = '/api/allTasks';
+            tableName = 'table_tasks';
+            request.open('POST', urlBase + '/api/deleteTask');
+        }
+        request.setRequestHeader('Content-type', 'application/json');
+        const json = JSON.stringify(id);
+        request.send(json);
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                console.log('Успешно');
+                loadAndCreateTable(urlBase + urlApi, tableName);
+            } else {
+                console.log('Error');
+            }
+        });
+    }
+
+
     function showModalForm(e, ...p) {
 
         const target = e.target;
@@ -127,16 +200,17 @@ window.addEventListener("DOMContentLoaded", () => {
             create: 'Создание',
             edit: 'Редактирование'
         };
+
         const formEmp = document.forms.emp;
         const formTask = document.forms.task;
-        formEmp.reset();
-        formTask.reset();
+        // formEmp.reset();
+        // formTask.reset();
+
         if (target && target.classList.contains("btn_add_emp") || p[0] instanceof Employee) {
             modalTitle = modalEmp.querySelector(".modal_emp_title");
             selector(".modal_emp");
-
             if (p.length !== 0) {
-                modalTitle.textContent = `${list.edit} - Сотрудника #${p[0].id}`;
+                modalTitle.textContent = `${list.edit} - Сотрудника №${p[0].id}`;
                 formEmp.elements.full_name.value = p[0].fullName;
                 if (p[0].leader !== null) document.querySelector(`.modal_emp select option[value='${p[0].leader}']`).selected = true;
                 formEmp.elements.branch.value = p[0].branchName;
@@ -144,12 +218,11 @@ window.addEventListener("DOMContentLoaded", () => {
                 modalTitle.textContent = `${list.create} - Сотрудника`;
             }
             modalEmp.style.display = 'block';
-            saveEmpAndTask(formEmp, new Employee());
         } else if (target && target.classList.contains("btn_add_task") || p[0] instanceof Task) {
             selector(".modal_task");
             modalTitle = modalTask.querySelector(".modal_task_title");
             if (p.length !== 0) {
-                modalTitle.textContent = `${list.edit} - Задачи #${p[0].id}`;
+                modalTitle.textContent = `${list.edit} - Задачи №${p[0].id}`;
                 formTask.elements.description.value = p[0].description;
                 if (p[0].employeeId !== null) document.querySelector(`.modal_task select option[value='${p[0].employeeId}']`).selected = true;
                 formTask.elements.priority.value = p[0].priority;
@@ -157,57 +230,36 @@ window.addEventListener("DOMContentLoaded", () => {
                 modalTitle.textContent = `${list.create} - Задачи`;
             }
             modalTask.style.display = 'block';
-            saveEmpAndTask(formTask, new Task());
         }
     }
 
-    function saveEmpAndTask(form, typeObj, ...id) {
-        if (id.length === 0) {
-            id[0] = 0;
-        }
-        console.log('Функция запустилась');
-        form.addEventListener('submit', (e) => {
-            console.log('Обработчик запустился');
-            e.preventDefault();
-            // if(e.target && e.target.classList.contains('btn_form_save')) {
-            if (typeObj instanceof Task) {
-                let select = document.querySelector(".modal_task select");
-                let obj = new Task(
-                    id[0],
-                    form.elements.description.value,
-                    select.options[select.selectedIndex].value,
-                    form.elements.priority.value
-                );
-                if (id.length !== 0) obj.id = id[0];
-                loadSave(obj);
-                console.log('Выполнение логики');
-            } else if (typeObj instanceof Employee) {
-                let select = document.querySelector(".modal_emp select"); // Выбираем  select по id
-                let obj = new Employee(
-                    id[0],
-                    form.elements.full_name.value,
-                    select.options[select.selectedIndex].value,
-                    form.elements.branch.value
-                );
-                if (id.length !== 0) obj.id = id[0];
-                loadSave(obj);
-            }
-
-            // }
-        });
-    }
+    // function saveEmpAndTask(form, typeObj, ...id) {
+    //     if (id.length === 0) {
+    //         id[0] = 0;
+    //     }
+    // }
 
     function loadSave(obj) {
         const request = new XMLHttpRequest;
-        request.open('POST', urlBase + '/api/save');
+        let urlApi, tableName;
+        if(obj instanceof Employee){
+            urlApi = '/api/allEmployees';
+            tableName = 'table_emps';
+            request.open('POST', urlBase + '/api/saveEmp');
+        }else if(obj instanceof Task){
+            urlApi = '/api/allTasks';
+            tableName = 'table_tasks';
+            request.open('POST', urlBase + '/api/saveTask');
+        }
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(obj);
         request.send(json);
         request.addEventListener('load', () => {
             if (request.status === 200) {
-                console.log(request.response);
+                console.log('Успешно');
+                loadAndCreateTable(urlBase + urlApi, tableName);
             } else {
-                console.log('Error: ' + request.response);
+                console.log('Error');
             }
         });
     }
@@ -216,7 +268,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
         let leaderSelect = document.querySelector(nameModal + " .leader_select");
         leaderSelect.innerHTML = "";
-        leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
+        if(nameModal !== ".modal_task"){
+            leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
+        }
         arrEmployees.forEach(item => {
             leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
         });
@@ -355,7 +409,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
                         arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks));
                     });
-                    console.log(arrEmployees);
                     createTable(arrEmployees, tableName);
                 } else if (tableName.indexOf('tasks') > 0) {
                     arrTasks = [];

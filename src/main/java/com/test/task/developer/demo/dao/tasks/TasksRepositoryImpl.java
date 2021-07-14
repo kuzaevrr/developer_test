@@ -1,10 +1,13 @@
 package com.test.task.developer.demo.dao.tasks;
 
+import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
+import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +20,7 @@ import java.util.Objects;
 @Repository
 @Transactional
 public class TasksRepositoryImpl
-        implements TasksRepository
-        {
+        implements TasksRepository {
 
     @Autowired
     private DSLContext dsl;
@@ -65,12 +67,24 @@ public class TasksRepositoryImpl
                 .execute();
     }
 
+    @Override
+    public void updateTask(Task task) {
+        dsl.update(Tasks.TASKS)
+                .set(dsl.newRecord(Tasks.TASKS, task))
+                .where(Tasks.TASKS.ID.eq(task.getId()))
+                .returning()
+                .fetchOptional()
+                .orElseThrow(() -> new DataAccessException("Error updating entity: " + task.getId()))
+                .into(Task.class);
+    }
 
-    private Task getTaskEntity(Record r){
+    private Task getTaskEntity(Record r) {
         Integer id = r.getValue(Tasks.TASKS.ID, Integer.class);
         Integer priority = r.getValue(Tasks.TASKS.PRIORITY, Integer.class);
-        String description = r.getValue(Tasks.TASKS.DESCRIPTION, String.class) ;
+        String description = r.getValue(Tasks.TASKS.DESCRIPTION, String.class);
         Integer employee_id = r.getValue(Tasks.TASKS.EMPLOYEE_ID, Integer.class);
         return new Task(id, priority, description, employee_id);
     }
+
+
 }

@@ -67,4 +67,14 @@ public class ServiceImpl
     public void deleteAllTasks() {
         tasksRepository.deleteAllTasks();
     }
+
+    @Override
+    public void updateEmployee(Employee employee){
+        employeesRepository.updateEmployee(employee);
+    }
+
+    @Override
+    public void updateTask(Task task){
+        tasksRepository.updateTask(task);
+    }
 }

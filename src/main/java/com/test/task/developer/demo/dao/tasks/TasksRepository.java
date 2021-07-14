@@ -12,5 +12,5 @@ public interface TasksRepository {
     void setTask(Task task);
     void deleteTask(Integer id_employee);
     void deleteAllTasks();
-
+    void updateTask(Task task);
 }

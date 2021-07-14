@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.sql.Types.NULL;
+
 @RestController
 @RequestMapping("/api")
 public class ApiController {
@@ -65,10 +67,37 @@ public class ApiController {
 
     }
 
-    @PostMapping("/save")
-    public Object save(@RequestBody Object object){
-        System.out.println(object.toString());
-        return object;
+    @PostMapping("/saveEmp")
+    public Employee saveEmp(@RequestBody Employee employee){
+        if(employee.getLeader() == 0){
+            employee.setLeader(null);
+        }
+        if(employee.getId() != 0){
+            service.updateEmployee(employee);
+        }else{
+            service.setEmployee(employee);
+        }
+        return employee;
+    }
+
+    @PostMapping("/saveTask")
+    public Task saveTask(@RequestBody Task task){
+        if(task.getId() != 0){
+            service.updateTask(task);
+        }else{
+            service.setTask(task);
+        }
+        return task;
+    }
+
+    @PostMapping("/deleteEmp")
+    public void deleteEmp(@RequestBody int id){
+        service.deleteEmployee(id);
+    }
+
+    @PostMapping("/deleteTask")
+    public void deleteTask(@RequestBody int id){
+        service.deleteTask(id);
     }
 
     @GetMapping("get_sort_up")

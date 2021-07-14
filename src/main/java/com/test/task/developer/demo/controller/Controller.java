@@ -16,27 +16,9 @@ import java.util.List;
 public class Controller {
 
 
-    @GetMapping("/employees")
+    @GetMapping("/developer-test")
     public String home(Model model){
 
-//        List<Employee> employeeList = service.allEmployees();
-//        List<Task> tasks = service.allTasks();
-//        for(Employee employee: employeeList) {
-//            int numberTasks =0;
-//            for (Task task : tasks) {
-//                if (task.getEmployee_id() == employee.getId()){
-//                    numberTasks++;
-//                }
-//            }
-//            for(Employee employee2: employeeList) {
-//                if (employee.getLeader() == employee2.getId()){
-//                    employee.setLeaderName(employee2.getFull_name());
-//                    break;
-//                }
-//            }
-//            employee.setNumber_tasks(numberTasks);
-//        }
-//        model.addAttribute("allEmployees", employeeList);
         return "main";
     }
 
