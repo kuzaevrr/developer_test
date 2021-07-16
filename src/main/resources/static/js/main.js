@@ -494,7 +494,4 @@ window.addEventListener("DOMContentLoaded", () => {
             return `Employee {${this.id}, ${this.fullName}, ${this.leader}, ${this.branchName}, ${this.numberTasks}}`;
         }
     }
-
-
 });
-
