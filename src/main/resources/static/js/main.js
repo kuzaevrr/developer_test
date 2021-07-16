@@ -126,8 +126,8 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     function clickListenerForm(item) {
-        item.addEventListener('reset', (e) =>{
-           e.preventDefault();
+        item.addEventListener('reset', (e) => {
+            e.preventDefault();
             let id = item.querySelector(".modal_title").textContent.split('№')[1];
             if (document.forms.task === item) {
                 deleteObj(id, new Task())
@@ -169,11 +169,11 @@ window.addEventListener("DOMContentLoaded", () => {
     function deleteObj(id, obj) {
         const request = new XMLHttpRequest;
         let urlApi, tableName;
-        if(obj instanceof Employee){
+        if (obj instanceof Employee) {
             urlApi = '/api/allEmployees';
             tableName = 'table_emps';
             request.open('POST', urlBase + '/api/deleteEmp');
-        }else if(obj instanceof Task){
+        } else if (obj instanceof Task) {
             urlApi = '/api/allTasks';
             tableName = 'table_tasks';
             request.open('POST', urlBase + '/api/deleteTask');
@@ -183,11 +183,11 @@ window.addEventListener("DOMContentLoaded", () => {
         request.send(json);
         request.addEventListener('load', () => {
             if (request.status === 200) {
-                console.log('Успешно');
+                // console.log('Успешно');
                 loadAndCreateTable(urlBase + urlApi, tableName);
             } else {
-                console.log('Error');
-                alert( JSON.parse(request.response).info);
+                // console.log('Error');
+                alert(JSON.parse(request.response).info);
             }
         });
     }
@@ -243,11 +243,11 @@ window.addEventListener("DOMContentLoaded", () => {
     function loadSave(obj) {
         const request = new XMLHttpRequest;
         let urlApi, tableName;
-        if(obj instanceof Employee){
+        if (obj instanceof Employee) {
             urlApi = '/api/allEmployees';
             tableName = 'table_emps';
             request.open('POST', urlBase + '/api/saveEmp');
-        }else if(obj instanceof Task){
+        } else if (obj instanceof Task) {
             urlApi = '/api/allTasks';
             tableName = 'table_tasks';
             request.open('POST', urlBase + '/api/saveTask');
@@ -257,10 +257,10 @@ window.addEventListener("DOMContentLoaded", () => {
         request.send(json);
         request.addEventListener('load', () => {
             if (request.status === 200) {
-                console.log('Успешно');
+                // console.log('Успешно');
                 loadAndCreateTable(urlBase + urlApi, tableName);
             } else {
-                console.log('Error');
+                // console.log('Error');
             }
         });
     }
@@ -269,7 +269,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         let leaderSelect = document.querySelector(nameModal + " .leader_select");
         leaderSelect.innerHTML = "";
-        if(nameModal !== ".modal_task"){
+        if (nameModal !== ".modal_task") {
             leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
         }
         arrEmployees.forEach(item => {
@@ -292,48 +292,84 @@ window.addEventListener("DOMContentLoaded", () => {
     //Сортировка
     function clickableSort(buttonTable, buttonSort) {
         buttonTable.forEach(item => {
-            let length = 1;
-            let numb = [];
+            let tableName, apiTable;
+            let columns = [
+                1, 1, 1, 1, 1, 1, 1, 1, 1
+            ];
             item.addEventListener("click", (event) => {
                 const target = event.target;
                 if (target && target.classList.contains("image_sort")) {
                     buttonSort.forEach((item, i) => {
-                        if (length) {
-                            numb.push(1);
-                            length++;
-                            if (length === buttonSort.length + 1) {
-                                length = 0;
-                            }
-                        }
                         if (target === item) {
-                            numb[i]++;
-                            if (numb[i] === 1) {
-                                item.src = 'images/sort.png';
-
-                            } else if (numb[i] === 2) {
-                                item.src = 'images/up.png';
-                                // let xhttp = new XMLHttpRequest();
-                                // xhttp.open("GET", urlBase + "/api/" + "get_sort_up", true);
-                                // xhttp.send();
-                                // xhttp.onload = function() { // (3)
-                                //
-                                //     if (xhttp.status != 200) {
-                                //         alert(xhttp.status + ': ' + xhttp.statusText);
-                                //     } else {
-                                //         console.log(xhttp.response);
-                                //     }
-                                // }
-                                // createTable(xhttp, "table_emps");
-                            } else if (numb[i] === 3) {
-                                item.src = 'images/down.png';
-                                numb[i] = 0;
+                            if (i >= 0 && i < 5) {
+                                tableName = 'table_emps';
+                                apiTable= '/api/allEmployees';
+                            } else if (i >= 5 && i < 9) {
+                                tableName = 'table_tasks';
+                                apiTable= '/api/allTasks';
                             }
-                            console.log(numb.length);
-                            console.log(numb);
+                            columns[i]++;
+                            if (columns[i] > 3) {
+                                columns[i] = 1;
+                            }
+                            if (columns[i] === 1) {
+                                item.src = 'images/sort.png';
+                                loadAndCreateTable(urlBase + apiTable, tableName)
+                            } else if (columns[i] === 2) {
+                                item.src = 'images/up.png';
+                                buttonSort.forEach((item, x) =>{
+                                   if (x!==i){
+                                       columns[x] = 1;
+                                       item.src = 'images/sort.png';
+                                   }
+                                });
+                                apiSort(columns, tableName);
+                            } else if (columns[i] === 3) {
+                                item.src = 'images/down.png';
+                                apiSort(columns, tableName);
+                            }
                         }
                     });
                 }
             });
+        });
+    }
+
+
+    // обращение к серверу для сортировки
+    function apiSort(columns, tableName) {
+
+        let empOfTaskP =0;
+        if(tableName === "table_emps") empOfTaskP = 1;
+        let columnsObj = {
+            empId: columns[0],
+            empFullName: columns[1],
+            empLeader: columns[2],
+            empBranch: columns[3],
+            empСountTasks: columns[4],
+            taskId: columns[5],
+            taskDescription: columns[6],
+            taskEmpId: columns[7],
+            taskPriority: columns[8],
+            empOfTask: empOfTaskP
+        };
+
+        const request = new XMLHttpRequest;
+        request.open('POST', urlBase + '/api/getSort');
+        request.setRequestHeader('Content-type', 'application/json');
+        const json = JSON.stringify(columnsObj);
+
+        request.send(json);
+        // console.log(json);
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                // console.log('Успешно');
+                // console.log(request.response);
+                createTable(JSON.parse(request.response), tableName);
+            } else {
+                // console.log('Error');
+                alert(JSON.parse(request.response).info);
+            }
         });
     }
 
@@ -361,7 +397,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (tableName === "table_emps") {
 
                 visible(true);
-                if (item.leader == null) {
+                if (item.leader == null || item.leader === 0) {
                     item.leader = "";
                 } else {
                     data.forEach(itemData => {

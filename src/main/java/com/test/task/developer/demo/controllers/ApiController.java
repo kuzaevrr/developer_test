@@ -4,11 +4,14 @@ package com.test.task.developer.demo.controllers;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.Service;
+import com.test.task.developer.demo.sorting.Sort;
+import liquibase.pro.packaged.S;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -30,7 +33,7 @@ public class ApiController {
         for(Employee employee: employeeList) {
             int numberTasks =0;
             for (Task task : tasks) {
-                if (task.getEmployeeId() == employee.getId()){
+                if (task.getEmployeeId().equals(employee.getId())){
                     numberTasks++;
                 }
             }
@@ -97,8 +100,20 @@ public class ApiController {
         service.deleteTask(id);
     }
 
-    @GetMapping("get_sort_up")
-    public List<Employee> getSortUp(){
-        return getAllEmployee();
+    @PostMapping("/getSort")
+    public List getSortUp(@RequestBody Map<String, Integer> map){
+
+        if(map.get("empOfTask") == 1){
+            Sort<Employee> sort = new Sort(getAllEmployee());
+            return  sort.sortList(map);
+        }else{
+            Sort<Task> sort = new Sort(getAllTasks());
+            return sort.sortList(map);
+        }
+    }
+
+
+    private void sort(String key, Integer value){
+
     }
 }

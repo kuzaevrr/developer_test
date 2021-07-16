@@ -10,11 +10,6 @@ public class Employee implements Comparable<Employee> {
     private String branchName;
     private Integer numberTasks;
 
-//    public Employee(String fullName, Integer leader, String branchName) {
-//        this.fullName = fullName;
-//        this.leader = leader;
-//        this.branchName = branchName;
-//    }
 
     public Employee(Integer id, String fullName, Integer leader, String branchName) {
         this.id = id;
@@ -85,34 +80,9 @@ public class Employee implements Comparable<Employee> {
     }
 }
 
-class NameEmployeeComparator implements Comparator<Employee> {
 
-    @Override
-    public int compare(Employee o1, Employee o2) {
-        return o1.getFullName().compareTo(o2.getFullName());
-    }
-}
 
-class LeaderEmployeeComparator implements Comparator<Employee> {
 
-    @Override
-    public int compare(Employee o1, Employee o2) {
-        return o1.getLeader().compareTo(o2.getLeader());
-    }
-}
 
-class BranchNameEmployeeComparator implements Comparator<Employee> {
 
-    @Override
-    public int compare(Employee o1, Employee o2) {
-        return o1.getBranchName().compareTo(o2.getBranchName());
-    }
-}
 
-class NumberTaskEmployeeComparator implements Comparator<Employee> {
-
-    @Override
-    public int compare(Employee o1, Employee o2) {
-        return o1.getNumberTasks().compareTo(o2.getNumberTasks());
-    }
-}

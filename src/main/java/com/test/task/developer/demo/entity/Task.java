@@ -9,12 +9,6 @@ public class Task implements Comparable<Task> {
     private String description;
     private Integer employeeId;
 
-//    public Task(Integer priority, String description, Integer employeeId) {
-//        this.priority = priority;
-//        this.description = description;
-//        this.employeeId = employeeId;
-//    }
-
     public Task(Integer id, Integer priority, String description, Integer employeeId) {
         this.id = id;
         this.priority = priority;
@@ -72,26 +66,6 @@ public class Task implements Comparable<Task> {
 }
 
 
-class PriorityTaskComparator implements Comparator<Task>{
 
-    @Override
-    public int compare(Task o1, Task o2) {
-        return o1.getPriority().compareTo(o2.getPriority());
-    }
-}
 
-class DescriptionTaskComparator implements Comparator<Task>{
 
-    @Override
-    public int compare(Task o1, Task o2) {
-        return o1.getDescription().compareTo(o2.getDescription());
-    }
-}
-
-class EmployeeIdTaskComparator implements Comparator<Task>{
-
-    @Override
-    public int compare(Task o1, Task o2) {
-        return o1.getEmployeeId().compareTo(o2.getEmployeeId());
-    }
-}
