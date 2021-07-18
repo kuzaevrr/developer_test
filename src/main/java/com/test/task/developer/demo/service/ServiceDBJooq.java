@@ -5,7 +5,7 @@ import com.test.task.developer.demo.entity.Task;
 
 import java.util.List;
 
-public interface Service {
+public interface ServiceDBJooq {
 
     List<Employee> allEmployees();
     Employee getEmployeeById(Integer id);
@@ -20,4 +20,5 @@ public interface Service {
     void deleteTask(Integer id_employee);
     void deleteAllTasks();
     void updateTask(Task task);
+    Integer getCountTasksByEmployeeId(Integer employeeId);
 }

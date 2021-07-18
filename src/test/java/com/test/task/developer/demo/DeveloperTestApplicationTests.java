@@ -2,7 +2,7 @@ package com.test.task.developer.demo;
 
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
-import com.test.task.developer.demo.service.Service;
+import com.test.task.developer.demo.service.ServiceDBJooq;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ import java.util.List;
 class DeveloperTestApplicationTests {
 
     @Autowired
-    private Service service;
+    private ServiceDBJooq service;
 
     @Test
     void contextLoad() {

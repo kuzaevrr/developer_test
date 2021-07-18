@@ -45,6 +45,14 @@ public class TasksRepositoryImpl
     }
 
     @Override
+    public Integer getCountTasksByEmployeeId(Integer employeeId) {
+        return dsl.selectCount()
+                .from(Tasks.TASKS)
+                .where(Tasks.TASKS.EMPLOYEE_ID.eq(employeeId))
+                .fetchAny(0, Integer.class);
+    }
+
+    @Override
     public void setTask(Task task) {
         dsl.insertInto(Tasks.TASKS)
                 .set(Tasks.TASKS.PRIORITY, task.getPriority())

@@ -13,4 +13,5 @@ public interface TasksRepository {
     void deleteTask(Integer id_employee);
     void deleteAllTasks();
     void updateTask(Task task);
+    Integer getCountTasksByEmployeeId(Integer employeeId);
 }

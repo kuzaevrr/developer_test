@@ -4,14 +4,16 @@ import com.test.task.developer.demo.dao.employees.EmployeesRepository;
 import com.test.task.developer.demo.dao.tasks.TasksRepository;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
+import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
-@org.springframework.stereotype.Service
-public class ServiceImpl
-        implements Service
-{
+@Service
+public class ServiceDBJooqImpl
+        implements ServiceDBJooq {
 
     @Autowired
     private EmployeesRepository employeesRepository;
@@ -20,7 +22,12 @@ public class ServiceImpl
 
     @Override
     public List<Employee> allEmployees() {
-        return employeesRepository.allEmployees();
+        List<Employee> employees = employeesRepository.allEmployees();
+        for (Employee employee : employees) {
+            employee.setNumberTasks(
+                    tasksRepository.getCountTasksByEmployeeId(employee.getId()));
+        }
+        return employees;
     }
 
     @Override
@@ -45,7 +52,9 @@ public class ServiceImpl
 
     @Override
     public List<Task> allTasks() {
-        return tasksRepository.allTasks();
+        List<Task> tasks = tasksRepository.allTasks();
+        Collections.sort(tasks, new PriorityTaskComparator());
+        return tasks;
     }
 
     @Override
@@ -69,12 +78,18 @@ public class ServiceImpl
     }
 
     @Override
-    public void updateEmployee(Employee employee){
+    public void updateEmployee(Employee employee) {
         employeesRepository.updateEmployee(employee);
     }
 
     @Override
-    public void updateTask(Task task){
+    public void updateTask(Task task) {
         tasksRepository.updateTask(task);
     }
+
+    @Override
+    public Integer getCountTasksByEmployeeId(Integer employeeId) {
+        return tasksRepository.getCountTasksByEmployeeId(employeeId);
+    }
+
 }

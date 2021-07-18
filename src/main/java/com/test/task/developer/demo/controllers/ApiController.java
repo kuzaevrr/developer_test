@@ -3,57 +3,29 @@ package com.test.task.developer.demo.controllers;
 
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
-import com.test.task.developer.demo.service.Service;
+import com.test.task.developer.demo.service.ServiceDBJooq;
 import com.test.task.developer.demo.sorting.Sort;
-import liquibase.pro.packaged.S;
+import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 public class ApiController {
 
-    private final Service service;
-
-    public ApiController(Service service) {
-        this.service = service;
-    }
+    @Autowired
+    private  ServiceDBJooq service;
 
     @GetMapping("/allEmployees")
     public List<Employee> getAllEmployee() {
-
-        List<Employee> employeeList = service.allEmployees();
-        List<Task> tasks = service.allTasks();
-
-        List<Employee> employeesResult = new ArrayList<>();
-        for(Employee employee: employeeList) {
-            int numberTasks =0;
-            for (Task task : tasks) {
-                if (task.getEmployeeId().equals(employee.getId())){
-                    numberTasks++;
-                }
-            }
-            employee.setNumberTasks(numberTasks);
-            employeesResult.add(employee);
-        }
-        return employeesResult;
+        return service.allEmployees();
     }
 
     @GetMapping("/allTasks")
     public List<Task> getAllTasks(){
-        List<Task> tasks = service.allTasks();
-        tasks.sort(new Comparator<Task>() {
-            @Override
-            public int compare(Task task, Task t1) {
-                return task.getPriority().compareTo(t1.getPriority());
-            }
-        }.reversed());
-
-        return tasks;
+        return service.allTasks();
     }
 
     @GetMapping("/getTask/{task_id}")
