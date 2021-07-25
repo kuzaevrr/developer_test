@@ -6,6 +6,8 @@ import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -28,6 +30,10 @@ public class ServiceDBJooqImpl
                     tasksRepository.getCountTasksByEmployeeId(employee.getId()));
         }
         return employees;
+    }
+
+    public Page<Employee> findBySearchTerm(String searchTerm, Pageable pageable){
+        return employeesRepository.findBySearchTerm(searchTerm, pageable);
     }
 
     @Override

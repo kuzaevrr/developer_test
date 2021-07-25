@@ -121,6 +121,13 @@
             <artifactId>jackson-core</artifactId>
             <version>2.12.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -138,15 +145,25 @@
             </plugin>
             <plugin>
                 <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-core</artifactId>
+                <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <changeLogFile>dbchangelog/v-1.0/db.changelog-master.xml</changeLogFile>
-                    <verbose>true</verbose>
+                    <propertyFile>${project.build.outputDirectory}/liquibase-maven-plugin.properties</propertyFile>
+                    <logging>info</logging>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-hibernate5</artifactId>
+                        <version>3.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-data-jpa</artifactId>
+                        <version>2.2.0.RELEASE</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-
-
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>

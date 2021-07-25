@@ -7,6 +7,8 @@ import com.test.task.developer.demo.service.ServiceDBJooq;
 import com.test.task.developer.demo.sorting.Sort;
 import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -17,6 +19,12 @@ public class ApiController {
 
     @Autowired
     private  ServiceDBJooq service;
+
+    @GetMapping("/search")
+    public Page<Employee> findBySearchTerm(@RequestParam("searchTerm")String searchTerm, Pageable pageable){
+        return service.findBySearchTerm(searchTerm, pageable);
+    }
+
 
     @GetMapping("/allEmployees")
     public List<Employee> getAllEmployee() {
