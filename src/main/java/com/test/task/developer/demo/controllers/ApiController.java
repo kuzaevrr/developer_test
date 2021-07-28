@@ -2,13 +2,14 @@ package com.test.task.developer.demo.controllers;
 
 
 import com.test.task.developer.demo.entity.Employee;
+import com.test.task.developer.demo.entity.PageNumb;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.ServiceDBJooq;
 import com.test.task.developer.demo.sorting.Sort;
-import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,11 +21,21 @@ public class ApiController {
     @Autowired
     private  ServiceDBJooq service;
 
-    @GetMapping("/search")
-    public Page<Employee> findBySearchTerm(@RequestParam("searchTerm")String searchTerm, Pageable pageable){
-        return service.findBySearchTerm(searchTerm, pageable);
+    @PostMapping("/searchEmp")
+    public Page<Employee> findBySearchTermEmp(//@RequestParam("searchTerm")String searchTerm,
+                                           @RequestBody PageNumb pageNumb){
+
+        return service.findBySearchTermEmployees( //searchTerm,
+                PageRequest.of(pageNumb.getPageNumb(), 20));
     }
 
+    @PostMapping("/searchTask")
+    public Page<Task> findBySearchTermTask(//@RequestParam("searchTerm")String searchTerm,
+                                           @RequestBody PageNumb pageNumb){
+
+        return service.findBySearchTermTasks( //searchTerm,
+                PageRequest.of(pageNumb.getPageNumb(), 20));
+    }
 
     @GetMapping("/allEmployees")
     public List<Employee> getAllEmployee() {

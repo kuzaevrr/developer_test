@@ -15,8 +15,9 @@ public interface ServiceDBJooq {
     void deleteEmployee(Integer id_employee);
     void deleteAllEmployees();
     void updateEmployee(Employee employee);
-    Page<Employee> findBySearchTerm(String searchTerm, Pageable pageable);
-
+    Page<Employee> findBySearchTermEmployees( //String searchTerm,
+                                              Pageable pageable);
+    Page<Task> findBySearchTermTasks( Pageable pageable);
     List<Task> allTasks();
     Task getTasksById(Integer id);
     void setTask(Task task);

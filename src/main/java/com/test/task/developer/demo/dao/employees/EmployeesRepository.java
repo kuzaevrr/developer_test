@@ -15,5 +15,6 @@ public interface EmployeesRepository {
     void deleteAllEmployees();
     void updateEmployee(Employee employee);
 
-    Page<Employee> findBySearchTerm(String searchTerm, Pageable pageable);
+    Page<Employee> findBySearchTerm( //String searchTerm,
+                                    Pageable pageable);
 }

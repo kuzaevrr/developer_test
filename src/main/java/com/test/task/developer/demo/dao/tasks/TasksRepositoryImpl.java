@@ -2,19 +2,23 @@ package com.test.task.developer.demo.dao.tasks;
 
 import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
+import com.jooq.postgress.project.jooq_postgress_project.tables.records.EmployeesRecord;
+import com.jooq.postgress.project.jooq_postgress_project.tables.records.TasksRecord;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 @Repository
@@ -34,6 +38,86 @@ public class TasksRepositoryImpl
             posts.add(getTaskEntity(r));
         }
         return posts;
+    }
+
+    @Override
+    public Page<Task> findBySearchTerm( //String searchTerm,
+                                            Pageable pageable){
+
+        //String likeExpression = "%" + searchTerm + "%";
+//        System.out.println(pageable.getPageNumber());
+        List<TasksRecord> queryResults = dsl.selectFrom(Tasks.TASKS)
+//                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
+//                .orderBy(getSortFields(pageable.getSort()))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetchInto(TasksRecord.class);
+
+        List<Task> todoEntries = convertQueryResultsToModelObjects(queryResults);
+        long totalCount = findCountByLikeExpression();
+        return new PageImpl<>(todoEntries, pageable, totalCount);
+    }
+
+    //количество запросов
+    private long findCountByLikeExpression( //String likeExpression
+    ) {
+        return dsl.fetchCount(dsl.select()
+                        .from(Tasks.TASKS)
+//                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
+        );
+    }
+
+    private Collection<SortField<?>> getSortFields(Sort sortSpecification){
+        Collection<SortField<?>> querySortFields = new ArrayList<>();
+
+        if (sortSpecification == null) {
+            return querySortFields;
+        }
+        //
+        Iterator<Sort.Order> specifiedFields = sortSpecification.iterator();
+        while (specifiedFields.hasNext()) {
+            Sort.Order specifiedField = specifiedFields.next();
+
+            String sortFieldName = specifiedField.getProperty();
+            Sort.Direction sortDirection = specifiedField.getDirection();
+
+            TableField tableField = getTableField(sortFieldName);
+            SortField<?> querySortField = convertTableFieldToSortField(tableField, sortDirection);
+            querySortFields.add(querySortField);
+        }
+        return querySortFields;
+    }
+
+    private TableField getTableField(String sortFieldName) {
+        TableField sortField = null;
+        try {
+            Field tableField = Tasks.TASKS.getClass().getField(sortFieldName);
+            sortField = (TableField) tableField.get(Tasks.TASKS);
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            String errorMessage = String.format("Could not find table field: {}", sortFieldName);
+            throw new InvalidDataAccessApiUsageException(errorMessage, ex);
+        }
+
+        return sortField;
+    }
+
+    private SortField<?> convertTableFieldToSortField(TableField tableField, Sort.Direction sortDirection) {
+        if (sortDirection == Sort.Direction.ASC) {
+            return tableField.asc();
+        }
+        else {
+            return tableField.desc();
+        }
+    }
+
+    private List<Task> convertQueryResultsToModelObjects(List<TasksRecord> queryResults){
+        List<Task> employeeEntry = new ArrayList<>();
+
+        for(TasksRecord queryResult: queryResults){
+            Task task = getTaskEntity(queryResult);
+            employeeEntry.add(task);
+        }
+        return employeeEntry;
     }
 
     @Override

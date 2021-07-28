@@ -18,6 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
         btnFormClose = document.querySelectorAll(".btn_form_close"),
         form = document.querySelectorAll('form');
 
+
     // form.forEach((item) => {
     //     item.addEventListener('submit', (e) => {
     //         e.preventDefault();
@@ -25,11 +26,12 @@ window.addEventListener("DOMContentLoaded", () => {
     // });
 
     let arrEmployees = [],
-        arrTasks = [];
+        arrTasks = [],
+        page = 0;
 
 
     //load table
-    loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
+    loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
 
     clickableSort(table,
         document.querySelectorAll(".image_sort"));
@@ -86,13 +88,15 @@ window.addEventListener("DOMContentLoaded", () => {
     //Редактирование задачи
 
 
+
+
     btnFormClose.forEach((item) => {
         item.addEventListener("click", closeModal);
     });
 
 
     buttonTask.addEventListener("click", () => {
-        loadAndCreateTable(urlBase + "/api/allTasks", "table_tasks");
+        loadAndCreateTable(urlBase + "/api/searchTask", {pageNumb: page}, "table_tasks");
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddTask, btnAddEmp);
@@ -100,7 +104,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     buttonEmployee.addEventListener("click", () => {
-        loadAndCreateTable(urlBase + "/api/allEmployees", "table_emps");
+        loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
         reverseVisibleBtnAdd(btnAddEmp, btnAddTask);
@@ -112,6 +116,8 @@ window.addEventListener("DOMContentLoaded", () => {
             showModalForm(e);
         });
     });
+
+    let pageUl = document.querySelector('.pagination ul');
 
     function closeModal() {
         modalEmp.style.display = 'none';
@@ -170,13 +176,13 @@ window.addEventListener("DOMContentLoaded", () => {
         const request = new XMLHttpRequest;
         let urlApi, tableName;
         if (obj instanceof Employee) {
-            urlApi = '/api/allEmployees';
+            urlApi = '/api/searchEmp';
             tableName = 'table_emps';
-            request.open('POST', urlBase + '/api/deleteEmp');
+            request.open('POST', {pageNumb: page}, urlBase + '/api/deleteEmp');
         } else if (obj instanceof Task) {
-            urlApi = '/api/allTasks';
+            urlApi = '/api/searchTask';
             tableName = 'table_tasks';
-            request.open('POST', urlBase + '/api/deleteTask');
+            request.open('POST', {pageNumb: page}, urlBase + '/api/deleteTask');
         }
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(id);
@@ -244,13 +250,13 @@ window.addEventListener("DOMContentLoaded", () => {
         const request = new XMLHttpRequest;
         let urlApi, tableName;
         if (obj instanceof Employee) {
-            urlApi = '/api/allEmployees';
+            urlApi = '/api/searchEmp';
             tableName = 'table_emps';
-            request.open('POST', urlBase + '/api/saveEmp');
+            request.open('POST', {page: 0}, urlBase + '/api/saveEmp');
         } else if (obj instanceof Task) {
-            urlApi = '/api/allTasks';
+            urlApi = '/api/searchTask';
             tableName = 'table_tasks';
-            request.open('POST', urlBase + '/api/saveTask');
+            request.open('POST', {page: 0}, urlBase + '/api/saveTask');
         }
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(obj);
@@ -303,10 +309,10 @@ window.addEventListener("DOMContentLoaded", () => {
                         if (target === item) {
                             if (i >= 0 && i < 5) {
                                 tableName = 'table_emps';
-                                apiTable= '/api/allEmployees';
+                                apiTable = '/api/searchEmp';
                             } else if (i >= 5 && i < 9) {
                                 tableName = 'table_tasks';
-                                apiTable= '/api/allTasks';
+                                apiTable = '/api/searchTask';
                             }
                             columns[i]++;
                             if (columns[i] > 3) {
@@ -314,14 +320,14 @@ window.addEventListener("DOMContentLoaded", () => {
                             }
                             if (columns[i] === 1) {
                                 item.src = 'images/sort.png';
-                                loadAndCreateTable(urlBase + apiTable, tableName)
+                                loadAndCreateTable(urlBase + apiTable, {pageNumb: page}, tableName);
                             } else if (columns[i] === 2) {
                                 item.src = 'images/up.png';
-                                buttonSort.forEach((item, x) =>{
-                                   if (x!==i){
-                                       columns[x] = 1;
-                                       item.src = 'images/sort.png';
-                                   }
+                                buttonSort.forEach((item, x) => {
+                                    if (x !== i) {
+                                        columns[x] = 1;
+                                        item.src = 'images/sort.png';
+                                    }
                                 });
                                 apiSort(columns, tableName);
                             } else if (columns[i] === 3) {
@@ -339,8 +345,8 @@ window.addEventListener("DOMContentLoaded", () => {
     // обращение к серверу для сортировки
     function apiSort(columns, tableName) {
 
-        let empOfTaskP =0;
-        if(tableName === "table_emps") empOfTaskP = 1;
+        let empOfTaskP = 0;
+        if (tableName === "table_emps") empOfTaskP = 1;
         let columnsObj = {
             empId: columns[0],
             empFullName: columns[1],
@@ -394,6 +400,7 @@ window.addEventListener("DOMContentLoaded", () => {
         let table = "";
 
         data.forEach(item => {
+
             if (tableName === "table_emps") {
 
                 visible(true);
@@ -415,7 +422,6 @@ window.addEventListener("DOMContentLoaded", () => {
                     <td class='table_th'>${item.numberTasks}</td>
                     </tr>`;
             } else if (tableName === "table_tasks") {
-
                 arrEmployees.forEach(itemData => {
                     if (itemData.id === item.employeeId) {
                         item.employeeId = itemData.fullName;
@@ -432,30 +438,59 @@ window.addEventListener("DOMContentLoaded", () => {
                     </tr>`;
             }
         });
+
+
+        for (let y = 0; y < (20 - data.length); y++) {
+            let xx;
+            let str = '';
+            if (tableName === "table_tasks") {
+                xx = 4
+            } else if (tableName === "table_emps") {
+                xx = 5
+            }
+            for (let x = 0; x < xx; x++) {
+                str += "<td class='table_th'></td> ";
+            }
+            table +=
+                `<tr class='table_tr'>
+                    ${str}
+                    </tr>`;
+        }
+
+
         document.querySelector("." + tableName).insertAdjacentHTML("beforeEnd", table);
         tableView();
     }
 
-    function loadAndCreateTable(url, tableName) {
-        $(document).ready(function () {
-            $.get(url, function (data) {
-                if (tableName.indexOf('emps') > 0) {
-                    // arrEmployees = JSON.parse(JSON.stringify(data)); //глубокое клонирование объекта
-                    arrEmployees = [];
-                    data.forEach(item => {
+    function loadAndCreateTable(url, page, tableName) {
 
+        const request = new XMLHttpRequest;
+        request.open('POST', url);
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(JSON.stringify(page));
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                let object = JSON.parse(request.response);
+
+                if (tableName.indexOf('emps') > 0) {
+                    arrEmployees = JSON.parse(JSON.stringify(object.content)); //глубокое клонирование объекта
+                    arrEmployees = [];
+                    object.content.forEach(item => {
                         arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks));
                     });
                     createTable(arrEmployees, tableName);
                 } else if (tableName.indexOf('tasks') > 0) {
                     arrTasks = [];
-                    data.forEach(item => {
+                    object.content.forEach(item => {
                         arrTasks.push(new Task(item.id, item.description, item.employeeId, item.priority));
                     });
                     createTable(arrTasks, tableName);
-                }
 
-            });
+                }
+                paginationView(object.totalPages);
+                pagination(object.pageable.pageNumber);
+            } else {
+            }
         });
     }
 
@@ -465,6 +500,41 @@ window.addEventListener("DOMContentLoaded", () => {
         tableTask.classList.remove(arr[+!bool]);
         tableEmp.classList.remove(arr[+bool]);
         tableTask.classList.add(arr[+bool]);
+    }
+
+    function paginationView(countPage) {
+        let pageUl = document.querySelector('.pagination ul');
+        pageUl.innerHTML = '';
+        let htmlDomLi = '';
+        htmlDomLi += '<li><a><</a></li>';
+        for (let i = 0; i < countPage; i++) {
+            htmlDomLi += `<li><a>${i + 1}</a></li>`;
+        }
+        htmlDomLi += '<li><a>></a></li>';
+        pageUl.insertAdjacentHTML("beforeEnd", htmlDomLi);
+
+    }
+
+    function pagination(pageNumber) {
+        document.querySelectorAll('.pagination li').forEach((item, index) =>{
+           let paginationDom = document.querySelectorAll('.pagination li');
+            paginationDom.item(pageNumber+1).style.fontWeight = "900";
+            item.addEventListener('click', (e)=>{
+
+                if (index === 0 && page !== 0) {
+                    page = page - 1;
+                } else if (index === paginationDom.length - 1 && page !== paginationDom.length-3) {
+                    console.log(page);
+                    console.log(paginationDom.length-3);
+                    page = page + 1;
+                } else if(index !==0 && index !== paginationDom.length-1){
+                    page = index - 1;
+                }
+                //Сделать валидацию)
+                loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
+
+            });
+        });
     }
 
 

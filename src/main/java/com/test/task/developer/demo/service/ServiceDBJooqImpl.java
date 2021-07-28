@@ -32,8 +32,17 @@ public class ServiceDBJooqImpl
         return employees;
     }
 
-    public Page<Employee> findBySearchTerm(String searchTerm, Pageable pageable){
-        return employeesRepository.findBySearchTerm(searchTerm, pageable);
+    @Override
+    public Page<Employee> findBySearchTermEmployees( //String searchTerm,
+                                                     Pageable pageable){
+
+        return employeesRepository.findBySearchTerm( //searchTerm,
+                pageable);
+    }
+
+    @Override
+    public Page<Task> findBySearchTermTasks( Pageable pageable){
+        return  tasksRepository.findBySearchTerm(pageable);
     }
 
     @Override

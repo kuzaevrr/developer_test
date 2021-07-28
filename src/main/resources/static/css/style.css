@@ -9,6 +9,10 @@ body {
     background-color: #f1f1e5;
 }
 
+.table_tr{
+    height: 30px;
+}
+
 .container {
     margin: 10px;
 }
@@ -81,10 +85,24 @@ body {
     background: #E7E7E7;
 }
 
+.div_table{
+    height: 625px;
+}
+
 .image_sort {
     margin-left: 2px;
     width: 12px;
     height: 12px;
+}
+
+.pagination{
+    margin: 10px;
+}
+
+.pagination li{
+    cursor: pointer;
+    padding: 5px;
+    display: inline;
 }
 
 .modal {

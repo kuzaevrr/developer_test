@@ -2,6 +2,8 @@ package com.test.task.developer.demo.dao.tasks;
 
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -14,4 +16,5 @@ public interface TasksRepository {
     void deleteAllTasks();
     void updateTask(Task task);
     Integer getCountTasksByEmployeeId(Integer employeeId);
+    Page<Task> findBySearchTerm( Pageable pageable);
 }
