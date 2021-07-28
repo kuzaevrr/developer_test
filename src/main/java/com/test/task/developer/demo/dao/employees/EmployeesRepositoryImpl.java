@@ -2,6 +2,7 @@ package com.test.task.developer.demo.dao.employees;
 
 
 import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
+import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
 import com.jooq.postgress.project.jooq_postgress_project.tables.records.EmployeesRecord;
 import com.test.task.developer.demo.dao.tasks.TasksRepository;
 import com.test.task.developer.demo.entity.Employee;
@@ -22,13 +23,9 @@ import java.lang.reflect.Field;
 @Repository
 @Transactional
 public class EmployeesRepositoryImpl
-        implements EmployeesRepository
-{
+        implements EmployeesRepository {
 
     private final DSLContext dsl;
-
-    @Autowired
-    private TasksRepository tasksRepository;
 
     public EmployeesRepositoryImpl(DSLContext dsl) {
         this.dsl = dsl;
@@ -36,7 +33,7 @@ public class EmployeesRepositoryImpl
 
     @Override
     public Page<Employee> findBySearchTerm( //String searchTerm,
-                                           Pageable pageable){
+                                            Pageable pageable) {
 
         //String likeExpression = "%" + searchTerm + "%";
 //        System.out.println(pageable.getPageNumber());
@@ -56,12 +53,12 @@ public class EmployeesRepositoryImpl
     private long findCountByLikeExpression( //String likeExpression
     ) {
         return dsl.fetchCount(dsl.select()
-                .from(Employees.EMPLOYEES)
+                        .from(Employees.EMPLOYEES)
 //                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
         );
     }
 
-    private Collection<SortField<?>> getSortFields(Sort sortSpecification){
+    private Collection<SortField<?>> getSortFields(Sort sortSpecification) {
         Collection<SortField<?>> querySortFields = new ArrayList<>();
 
         if (sortSpecification == null) {
@@ -98,24 +95,34 @@ public class EmployeesRepositoryImpl
     private SortField<?> convertTableFieldToSortField(TableField tableField, Sort.Direction sortDirection) {
         if (sortDirection == Sort.Direction.ASC) {
             return tableField.asc();
-        }
-        else {
+        } else {
             return tableField.desc();
         }
     }
 
-    private List<Employee> convertQueryResultsToModelObjects(List<EmployeesRecord> queryResults){
+    private List<Employee> convertQueryResultsToModelObjects(List<EmployeesRecord> queryResults) {
         List<Employee> employeeEntry = new ArrayList<>();
 
-        for(EmployeesRecord queryResult: queryResults){
+        for (EmployeesRecord queryResult : queryResults) {
             Employee employee = getEmployeeEntity(queryResult);
-            employee.setNumberTasks(tasksRepository.getCountTasksByEmployeeId(employee.getId()));
+            employee.setNumberTasks(
+                    getCountTask(employee.getId()));
+            if(employee.getLeader() != null){
+                employee.setLeaderName(
+                        getEmployeeById(employee.getLeader())
+                                .getFullName());
+            }
             employeeEntry.add(employee);
         }
         return employeeEntry;
     }
 
-
+    private Integer getCountTask(int employeeId) {
+        return dsl.selectCount()
+                .from(Tasks.TASKS)
+                .where(Tasks.TASKS.EMPLOYEE_ID.eq(employeeId))
+                .fetchAny(0, Integer.class);
+    }
 
     @Override
     public List<Employee> allEmployees() {
@@ -123,7 +130,7 @@ public class EmployeesRepositoryImpl
         Result<Record> result = dsl
                 .select()
                 .from(Employees.EMPLOYEES)
-                .limit(0,10)
+//                .limit(0, 10)
                 .fetch();
         for (Record r : result) {
             posts.add(getEmployeeEntity(r));
@@ -133,9 +140,9 @@ public class EmployeesRepositoryImpl
 
     @Override
     public Employee getEmployeeById(Integer id) {
-        return Objects.requireNonNull(dsl.selectFrom(Employees.EMPLOYEES)
+        return dsl.selectFrom(Employees.EMPLOYEES)
                 .where(Employees.EMPLOYEES.ID.eq(id))
-                .fetchAny())
+                .fetchAny()
                 .into(Employee.class);
     }
 
@@ -151,7 +158,7 @@ public class EmployeesRepositoryImpl
     }
 
     @Override
-    public void updateEmployee(Employee employee){
+    public void updateEmployee(Employee employee) {
         dsl.update(Employees.EMPLOYEES)
                 .set(dsl.newRecord(Employees.EMPLOYEES, employee))
                 .where(Employees.EMPLOYEES.ID.eq(employee.getId()))
@@ -174,10 +181,10 @@ public class EmployeesRepositoryImpl
                 .execute();
     }
 
-    private Employee getEmployeeEntity(Record r){
+    private Employee getEmployeeEntity(Record r) {
         Integer id = r.getValue(Employees.EMPLOYEES.ID, Integer.class);
-        String full_name = r.getValue(Employees.EMPLOYEES.FULL_NAME, String.class) ;
-        Integer leader = r.getValue(Employees.EMPLOYEES.LEADER, Integer.class) ;
+        String full_name = r.getValue(Employees.EMPLOYEES.FULL_NAME, String.class);
+        Integer leader = r.getValue(Employees.EMPLOYEES.LEADER, Integer.class);
         String branch_name = r.getValue(Employees.EMPLOYEES.BRANCH_NAME, String.class);
 
         return new Employee(id, full_name, leader, branch_name);

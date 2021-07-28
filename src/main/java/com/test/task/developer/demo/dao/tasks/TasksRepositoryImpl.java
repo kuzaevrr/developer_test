@@ -4,6 +4,8 @@ import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
 import com.jooq.postgress.project.jooq_postgress_project.tables.records.EmployeesRecord;
 import com.jooq.postgress.project.jooq_postgress_project.tables.records.TasksRecord;
+import com.test.task.developer.demo.dao.employees.EmployeesRepository;
+import com.test.task.developer.demo.dao.employees.EmployeesRepositoryImpl;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import org.jooq.*;
@@ -26,9 +28,11 @@ import java.util.*;
 public class TasksRepositoryImpl
         implements TasksRepository {
 
-    @Autowired
-    private DSLContext dsl;
+    private final DSLContext dsl;
 
+    public TasksRepositoryImpl(DSLContext dsl) {
+        this.dsl = dsl;
+    }
 
     @Override
     public List<Task> allTasks() {
@@ -40,9 +44,10 @@ public class TasksRepositoryImpl
         return posts;
     }
 
+
     @Override
     public Page<Task> findBySearchTerm( //String searchTerm,
-                                            Pageable pageable){
+                                        Pageable pageable) {
 
         //String likeExpression = "%" + searchTerm + "%";
 //        System.out.println(pageable.getPageNumber());
@@ -67,7 +72,7 @@ public class TasksRepositoryImpl
         );
     }
 
-    private Collection<SortField<?>> getSortFields(Sort sortSpecification){
+    private Collection<SortField<?>> getSortFields(Sort sortSpecification) {
         Collection<SortField<?>> querySortFields = new ArrayList<>();
 
         if (sortSpecification == null) {
@@ -104,17 +109,22 @@ public class TasksRepositoryImpl
     private SortField<?> convertTableFieldToSortField(TableField tableField, Sort.Direction sortDirection) {
         if (sortDirection == Sort.Direction.ASC) {
             return tableField.asc();
-        }
-        else {
+        } else {
             return tableField.desc();
         }
     }
 
-    private List<Task> convertQueryResultsToModelObjects(List<TasksRecord> queryResults){
+    private List<Task> convertQueryResultsToModelObjects(List<TasksRecord> queryResults) {
         List<Task> employeeEntry = new ArrayList<>();
 
-        for(TasksRecord queryResult: queryResults){
+        for (TasksRecord queryResult : queryResults) {
             Task task = getTaskEntity(queryResult);
+            task.setEmployeeFullName(
+                    Objects.requireNonNull(dsl.selectFrom(Employees.EMPLOYEES)
+                            .where(Employees.EMPLOYEES.ID.eq(task.getEmployeeId()))
+                            .fetchAny())
+                            .into(Employee.class)
+                            .getFullName());
             employeeEntry.add(task);
         }
         return employeeEntry;

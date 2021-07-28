@@ -9,7 +9,7 @@ public class Employee implements Comparable<Employee> {
     private Integer leader;
     private String branchName;
     private Integer numberTasks;
-
+    private String leaderName;
 
     public Employee(Integer id, String fullName, Integer leader, String branchName) {
         this.id = id;
@@ -18,6 +18,13 @@ public class Employee implements Comparable<Employee> {
         this.branchName = branchName;
     }
 
+    public String getLeaderName() {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName) {
+        this.leaderName = leaderName;
+    }
 
     public Integer getNumberTasks() {
         return numberTasks;

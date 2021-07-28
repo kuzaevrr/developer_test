@@ -66,13 +66,15 @@ window.addEventListener("DOMContentLoaded", () => {
                             object.fullName,
                             object.leader,
                             object.branchName,
-                            object.numberTasks);
+                            object.numberTasks,
+                            object.leaderName);
                     } else if (item.contains(tab_task)) {
                         resultObj = new Task(
                             object.id,
                             object.description,
                             object.employeeId,
-                            object.priority);
+                            object.priority,
+                            object.employeeFullName);
                     }
                     showModalForm(item, resultObj);
                 } else {
@@ -87,15 +89,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     //Редактирование задачи
 
-
-
-
     btnFormClose.forEach((item) => {
         item.addEventListener("click", closeModal);
     });
 
 
     buttonTask.addEventListener("click", () => {
+        page = 0;
         loadAndCreateTable(urlBase + "/api/searchTask", {pageNumb: page}, "table_tasks");
         buttonTask.setAttribute("disabled", true);
         buttonEmployee.removeAttribute("disabled");
@@ -104,6 +104,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     buttonEmployee.addEventListener("click", () => {
+        page = 0;
         loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
         buttonEmployee.setAttribute("disabled", true);
         buttonTask.removeAttribute("disabled");
@@ -178,11 +179,11 @@ window.addEventListener("DOMContentLoaded", () => {
         if (obj instanceof Employee) {
             urlApi = '/api/searchEmp';
             tableName = 'table_emps';
-            request.open('POST', {pageNumb: page}, urlBase + '/api/deleteEmp');
+            request.open('POST', urlBase + '/api/deleteEmp');
         } else if (obj instanceof Task) {
             urlApi = '/api/searchTask';
             tableName = 'table_tasks';
-            request.open('POST', {pageNumb: page}, urlBase + '/api/deleteTask');
+            request.open('POST', urlBase + '/api/deleteTask');
         }
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(id);
@@ -190,7 +191,7 @@ window.addEventListener("DOMContentLoaded", () => {
         request.addEventListener('load', () => {
             if (request.status === 200) {
                 // console.log('Успешно');
-                loadAndCreateTable(urlBase + urlApi, tableName);
+                loadAndCreateTable(urlBase + urlApi, {pageNumb: page}, tableName);
             } else {
                 // console.log('Error');
                 alert(JSON.parse(request.response).info);
@@ -203,10 +204,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const target = e.target;
         let modalTitle;
-        let list = {
-            create: 'Создание',
-            edit: 'Редактирование'
-        };
+
 
         const formEmp = document.forms.emp;
         const formTask = document.forms.task;
@@ -215,28 +213,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (target && target.classList.contains("btn_add_emp") || p[0] instanceof Employee) {
             modalTitle = modalEmp.querySelector(".modal_emp_title");
-            selector(".modal_emp");
-            if (p.length !== 0) {
-                modalTitle.textContent = `${list.edit} - Сотрудника №${p[0].id}`;
-                formEmp.elements.full_name.value = p[0].fullName;
-                if (p[0].leader !== null) document.querySelector(`.modal_emp select option[value='${p[0].leader}']`).selected = true;
-                formEmp.elements.branch.value = p[0].branchName;
-            } else {
-                modalTitle.textContent = `${list.create} - Сотрудника`;
-            }
-            modalEmp.style.display = 'block';
+            selector(".modal_emp", p, modalTitle, formEmp);
         } else if (target && target.classList.contains("btn_add_task") || p[0] instanceof Task) {
-            selector(".modal_task");
             modalTitle = modalTask.querySelector(".modal_task_title");
-            if (p.length !== 0) {
-                modalTitle.textContent = `${list.edit} - Задачи №${p[0].id}`;
-                formTask.elements.description.value = p[0].description;
-                if (p[0].employeeId !== null) document.querySelector(`.modal_task select option[value='${p[0].employeeId}']`).selected = true;
-                formTask.elements.priority.value = p[0].priority;
-            } else {
-                modalTitle.textContent = `${list.create} - Задачи`;
-            }
-            modalTask.style.display = 'block';
+            selector(".modal_task", p, modalTitle, formTask);
         }
     }
 
@@ -252,11 +232,11 @@ window.addEventListener("DOMContentLoaded", () => {
         if (obj instanceof Employee) {
             urlApi = '/api/searchEmp';
             tableName = 'table_emps';
-            request.open('POST', {page: 0}, urlBase + '/api/saveEmp');
+            request.open('POST', urlBase + '/api/saveEmp');
         } else if (obj instanceof Task) {
             urlApi = '/api/searchTask';
             tableName = 'table_tasks';
-            request.open('POST', {page: 0}, urlBase + '/api/saveTask');
+            request.open('POST', urlBase + '/api/saveTask');
         }
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(obj);
@@ -264,24 +244,64 @@ window.addEventListener("DOMContentLoaded", () => {
         request.addEventListener('load', () => {
             if (request.status === 200) {
                 // console.log('Успешно');
-                loadAndCreateTable(urlBase + urlApi, tableName);
+                loadAndCreateTable(urlBase + urlApi, {pageNumb: page}, tableName);
             } else {
                 // console.log('Error');
             }
         });
     }
 
-    function selector(nameModal) {
+    function selector(nameModal, p, modalTitle, form) {
 
         let leaderSelect = document.querySelector(nameModal + " .leader_select");
         leaderSelect.innerHTML = "";
         if (nameModal !== ".modal_task") {
             leaderSelect.insertAdjacentHTML('beforeend', `<option value='0'></option>`);
         }
-        arrEmployees.forEach(item => {
-            leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
+        const request = new XMLHttpRequest;
+        request.open('GET', urlBase + '/api/allEmployees');
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send();
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                JSON.parse(request.response).forEach(item => {
+                    leaderSelect.insertAdjacentHTML('beforeend', `<option value='${item.id}'>${item.fullName}</option>`);
+                });
+                showModalFormContinue(nameModal, p, modalTitle, form);
+            } else {
+
+            }
         });
     }
+
+    function showModalFormContinue(nameModal, p, modalTitle, form) {
+        let list = {
+            create: 'Создание',
+            edit: 'Редактирование'
+        };
+        if (nameModal === ".modal_emp") {
+            if (p.length !== 0) {
+                modalTitle.textContent = `${list.edit} - Сотрудника №${p[0].id}`;
+                form.elements.full_name.value = p[0].fullName;
+                if (p[0].leader !== null)  document.querySelector(`.modal_emp select option[value="${p[0].leader}"]`).selected = true;
+                form.elements.branch.value = p[0].branchName;
+            } else {
+                modalTitle.textContent = `${list.create} - Сотрудника`;
+            }
+            modalEmp.style.display = 'block';
+        } else if (nameModal === ".modal_task") {
+            if (p.length !== 0) {
+                modalTitle.textContent = `${list.edit} - Задачи №${p[0].id}`;
+                form.elements.description.value = p[0].description;
+                if (p[0].employeeId !== null) document.querySelector(`.modal_task select  option[value="${p[0].employeeId}"]`).selected = true;
+                form.elements.priority.value = p[0].priority;
+            } else {
+                modalTitle.textContent = `${list.create} - Задачи`;
+            }
+            modalTask.style.display = 'block';
+        }
+    }
+
 
     function reverseVisibleBtnAdd(btnVisible, btnInvisible) {
         btnInvisible.classList.add('hide');
@@ -404,36 +424,35 @@ window.addEventListener("DOMContentLoaded", () => {
             if (tableName === "table_emps") {
 
                 visible(true);
-                if (item.leader == null || item.leader === 0) {
-                    item.leader = "";
+                if (item.leaderName == null || item.leaderName === 0) {
+                    item.leaderName = "";
                 } else {
-                    data.forEach(itemData => {
-                        if (itemData.id === item.leader) {
-                            item.leader = itemData.fullName;
-                        }
-                    });
+                    // data.forEach(itemData => {
+                    //     if (itemData.id === item.leader) {
+                    //         item.leader = itemData.fullName;
+                    //     }
+                    // });
                 }
                 table +=
                     `<tr class='table_tr'>
                     <td class='table_th'>${item.id}</td>
                     <td class='table_th'><a href='${item.id}' onclick='return false'>${item.fullName}</a></td>
-                    <td class='table_th'>${item.leader}</td>
+                    <td class='table_th'>${item.leaderName}</td>
                     <td class='table_th'>${item.branchName}</td>
                     <td class='table_th'>${item.numberTasks}</td>
                     </tr>`;
             } else if (tableName === "table_tasks") {
-                arrEmployees.forEach(itemData => {
-                    if (itemData.id === item.employeeId) {
-                        item.employeeId = itemData.fullName;
-                    }
-                });
-
+                // arrEmployees.forEach(itemData => {
+                //     if (itemData.id === item.employeeId) {
+                //         item.employeeId = itemData.fullName;
+                //     }
+                // });
                 visible(false);
                 table +=
                     `<tr class='table_tr'> 
                     <td class='table_th'>${item.id}</td> 
                     <td class='table_th'><a href='${item.id}' onclick='return false'>${item.description}</a></td>
-                    <td class='table_th'>${item.employeeId}</td>
+                    <td class='table_th'>${item.employeeFullName}</td>
                     <td class='table_th'>${item.priority}</td>
                     </tr>`;
             }
@@ -462,6 +481,7 @@ window.addEventListener("DOMContentLoaded", () => {
         tableView();
     }
 
+
     function loadAndCreateTable(url, page, tableName) {
 
         const request = new XMLHttpRequest;
@@ -476,13 +496,13 @@ window.addEventListener("DOMContentLoaded", () => {
                     arrEmployees = JSON.parse(JSON.stringify(object.content)); //глубокое клонирование объекта
                     arrEmployees = [];
                     object.content.forEach(item => {
-                        arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks));
+                        arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks, item.leaderName));
                     });
                     createTable(arrEmployees, tableName);
                 } else if (tableName.indexOf('tasks') > 0) {
                     arrTasks = [];
                     object.content.forEach(item => {
-                        arrTasks.push(new Task(item.id, item.description, item.employeeId, item.priority));
+                        arrTasks.push(new Task(item.id, item.description, item.employeeId, item.priority, item.employeeFullName));
                     });
                     createTable(arrTasks, tableName);
 
@@ -516,22 +536,27 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function pagination(pageNumber) {
-        document.querySelectorAll('.pagination li').forEach((item, index) =>{
-           let paginationDom = document.querySelectorAll('.pagination li');
-            paginationDom.item(pageNumber+1).style.fontWeight = "900";
-            item.addEventListener('click', (e)=>{
+        document.querySelectorAll('.pagination li').forEach((item, index) => {
+            let paginationDom = document.querySelectorAll('.pagination li');
+            paginationDom.item(pageNumber + 1).style.fontWeight = "900";
+            item.addEventListener('click', (e) => {
 
                 if (index === 0 && page !== 0) {
                     page = page - 1;
-                } else if (index === paginationDom.length - 1 && page !== paginationDom.length-3) {
+                } else if (index === paginationDom.length - 1 && page !== paginationDom.length - 3) {
                     console.log(page);
-                    console.log(paginationDom.length-3);
+                    console.log(paginationDom.length - 3);
                     page = page + 1;
-                } else if(index !==0 && index !== paginationDom.length-1){
+                } else if (index !== 0 && index !== paginationDom.length - 1) {
                     page = index - 1;
                 }
                 //Сделать валидацию)
-                loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
+                if (tableEmp.classList.contains("show")) {
+                    loadAndCreateTable(urlBase + "/api/searchEmp", {pageNumb: page}, "table_emps");
+                } else if (tableTask.classList.contains("show")) {
+                    loadAndCreateTable(urlBase + "/api/searchTask", {pageNumb: page}, "table_tasks");
+                }
+
 
             });
         });
@@ -539,11 +564,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     class Task {
-        constructor(id, description, employeeId, priority) {
+        constructor(id, description, employeeId, priority, employeeFullName) {
             this.id = id;
             this.description = description;
             this.employeeId = employeeId;
             this.priority = priority;
+            this.employeeFullName = employeeFullName;
         }
 
         getString() {
@@ -552,12 +578,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     class Employee {
-        constructor(id, fullName, leader, branchName, numberTasks) {
+        constructor(id, fullName, leader, branchName, numberTasks, leaderName) {
             this.id = id;
             this.fullName = fullName;
             this.leader = leader;
             this.branchName = branchName;
             this.numberTasks = numberTasks;
+            this.leaderName = leaderName;
         }
 
         getString() {
