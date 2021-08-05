@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Collections;
 import java.util.List;
 
 @Service
+@Validated
 public class ServiceDBJooqImpl
         implements ServiceDBJooq {
 
@@ -55,9 +57,19 @@ public class ServiceDBJooqImpl
         employeesRepository.setEmployee(employee);
     }
 
+
+    /** Метод удаление сотрудника
+     *
+     * @param id_employee id сотрудника передаваемый из Фронта
+     */
     @Override
     public void deleteEmployee(Integer id_employee) {
         employeesRepository.deleteEmployee(id_employee);
+    }
+
+    @Override
+    public Integer countEmployeeHasSubordinate(Integer employeeId){
+        return employeesRepository.countEmployeeHasSubordinate(employeeId);
     }
 
     @Override

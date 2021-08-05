@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class Employee implements Comparable<Employee> {
 
+
     private Integer id;
     private String fullName;
     private Integer leader;

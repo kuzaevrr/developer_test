@@ -140,11 +140,13 @@ public class EmployeesRepositoryImpl
 
     @Override
     public Employee getEmployeeById(Integer id) {
-        return dsl.selectFrom(Employees.EMPLOYEES)
+        return Objects.requireNonNull(dsl.selectFrom(Employees.EMPLOYEES)
                 .where(Employees.EMPLOYEES.ID.eq(id))
-                .fetchAny()
+                .fetchAny())
                 .into(Employee.class);
     }
+
+
 
     @Override
     public void setEmployee(Employee employee) {
@@ -169,10 +171,19 @@ public class EmployeesRepositoryImpl
     }
 
     @Override
-    public void deleteEmployee(Integer id_employee) {
+    public void deleteEmployee(Integer employeeId) {
         dsl.deleteFrom(Employees.EMPLOYEES)
-                .where(Employees.EMPLOYEES.ID.eq(id_employee))
+                .where(Employees.EMPLOYEES.ID.eq(employeeId))
                 .execute();
+    }
+
+
+    @Override
+    public Integer countEmployeeHasSubordinate(Integer employeeId){
+        return dsl.selectCount()
+                .from(Employees.EMPLOYEES)
+                .where(Employees.EMPLOYEES.LEADER.eq(employeeId))
+                .fetchAny(0, Integer.class);
     }
 
     @Override

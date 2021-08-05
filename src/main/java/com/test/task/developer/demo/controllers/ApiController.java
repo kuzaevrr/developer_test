@@ -10,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
+@Validated
 @RequestMapping("/api")
 public class ApiController {
 
@@ -81,9 +85,15 @@ public class ApiController {
         return task;
     }
 
+    /**Метод по удалению сотрудника
+     *
+     * @param id сотрудника
+     * @return Возвращает валлидацию
+     */
     @PostMapping("/deleteEmp")
-    public void deleteEmp(@RequestBody int id){
+    public ResponseEntity<String> deleteEmp(@Valid @RequestBody int id){
         service.deleteEmployee(id);
+        return ResponseEntity.ok("valid");
     }
 
     @PostMapping("/deleteTask")

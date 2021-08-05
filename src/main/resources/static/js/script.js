@@ -246,7 +246,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 // console.log('Успешно');
                 loadAndCreateTable(urlBase + urlApi, {pageNumb: page}, tableName);
             } else {
-                // console.log('Error');
+                alert(JSON.parse(request.response).info);
             }
         });
     }

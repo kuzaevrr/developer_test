@@ -11,9 +11,10 @@ public interface EmployeesRepository {
     List<Employee> allEmployees();
     Employee getEmployeeById(Integer id);
     void setEmployee(Employee employee);
-    void deleteEmployee(Integer id_employee);
+    void deleteEmployee(Integer employeeId);
     void deleteAllEmployees();
     void updateEmployee(Employee employee);
+    Integer countEmployeeHasSubordinate(Integer employeeId);
 
     Page<Employee> findBySearchTerm( //String searchTerm,
                                     Pageable pageable);

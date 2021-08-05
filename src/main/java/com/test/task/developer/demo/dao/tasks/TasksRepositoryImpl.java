@@ -2,15 +2,11 @@ package com.test.task.developer.demo.dao.tasks;
 
 import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
-import com.jooq.postgress.project.jooq_postgress_project.tables.records.EmployeesRecord;
 import com.jooq.postgress.project.jooq_postgress_project.tables.records.TasksRecord;
-import com.test.task.developer.demo.dao.employees.EmployeesRepository;
-import com.test.task.developer.demo.dao.employees.EmployeesRepositoryImpl;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

@@ -17,6 +17,9 @@ public interface ServiceDBJooq {
     void updateEmployee(Employee employee);
     Page<Employee> findBySearchTermEmployees( //String searchTerm,
                                               Pageable pageable);
+    Integer countEmployeeHasSubordinate(Integer employeeId);
+
+
     Page<Task> findBySearchTermTasks( Pageable pageable);
     List<Task> allTasks();
     Task getTasksById(Integer id);
