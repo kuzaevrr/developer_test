@@ -4,8 +4,7 @@ package com.test.task.developer.demo.controllers;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.PageNumb;
 import com.test.task.developer.demo.entity.Task;
-import com.test.task.developer.demo.service.ServiceDBJooq;
-import com.test.task.developer.demo.sorting.Sort;
+import com.test.task.developer.demo.service.ServiceDBJooq;;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -101,20 +100,24 @@ public class ApiController {
         service.deleteTask(id);
     }
 
-    @PostMapping("/getSort")
-    public List getSortUp(@RequestBody Map<String, Integer> map){
-
-        if(map.get("empOfTask") == 1){
-            Sort<Employee> sort = new Sort(getAllEmployee());
-            return  sort.sortList(map);
-        }else{
-            Sort<Task> sort = new Sort(getAllTasks());
-            return sort.sortList(map);
-        }
+//    @PostMapping("/getSort")
+//    public List getSortUp(@RequestBody Map<String, Integer> map){
+//
+//        if(map.get("empOfTask") == 1){
+//            Sort<Employee> sort = new Sort(getAllEmployee());
+//            return  sort.sortList(map);
+//        }else{
+//            Sort<Task> sort = new Sort(getAllTasks());
+//            return sort.sortList(map);
+//        }
+//    }
+    @PostMapping("/getSortEmp")
+    public Page<Employee> getEmployeesOfSorting(@RequestBody Map<String, Integer> map){
+        return service.getEmployeesOfSorting(map, new PageNumb(map.get("pageNumb")));
     }
 
-
-    private void sort(String key, Integer value){
-
+    @PostMapping("/getSortTask")
+    public Page<Task> getTasksOfSorting(@RequestBody Map<String, Integer> map){
+        return service.getTaskOfSorting(map, new PageNumb(map.get("pageNumb")));
     }
 }

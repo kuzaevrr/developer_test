@@ -17,4 +17,9 @@ public interface TasksRepository {
     void updateTask(Task task);
     Integer getCountTasksByEmployeeId(Integer employeeId);
     Page<Task> findBySearchTerm( Pageable pageable);
+
+    Page<Task> sortingTaskId(int asc, Pageable pageable);
+    Page<Task> sortingTaskDescription(int asc, Pageable pageable);
+    Page<Task> sortingTaskEmpId(int asc, Pageable pageable);
+    Page<Task> sortingTaskPriority(int asc, Pageable pageable);
 }

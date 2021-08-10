@@ -32,14 +32,105 @@ public class EmployeesRepositoryImpl
     }
 
     @Override
-    public Page<Employee> findBySearchTerm( //String searchTerm,
-                                            Pageable pageable) {
+    public Page<Employee> sortingEmpId(int asc, Pageable pageable) {
+        List<EmployeesRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.ID.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.ID.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
 
-        //String likeExpression = "%" + searchTerm + "%";
-//        System.out.println(pageable.getPageNumber());
+    @Override
+    public Page<Employee> sortingEmpFullName(int asc, Pageable pageable) {
+        List<EmployeesRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.FULL_NAME.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.FULL_NAME.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Employee> sortingEmpLeader(int asc, Pageable pageable) {
+        List<EmployeesRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.LEADER.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.LEADER.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Employee> sortingEmpBranch(int asc, Pageable pageable) {
+        List<EmployeesRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.BRANCH_NAME.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.BRANCH_NAME.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Employee> sortingEmpСountTasks(int asc, Pageable pageable) {
+        List<EmployeesRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(EmployeesRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+
+    @Override
+    public Page<Employee> findBySearchTerm(Pageable pageable) {
+
         List<EmployeesRecord> queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-//                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
-//                .orderBy(getSortFields(pageable.getSort()))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchInto(EmployeesRecord.class);
@@ -107,7 +198,7 @@ public class EmployeesRepositoryImpl
             Employee employee = getEmployeeEntity(queryResult);
             employee.setNumberTasks(
                     getCountTask(employee.getId()));
-            if(employee.getLeader() != null){
+            if (employee.getLeader() != null) {
                 employee.setLeaderName(
                         getEmployeeById(employee.getLeader())
                                 .getFullName());
@@ -147,7 +238,6 @@ public class EmployeesRepositoryImpl
     }
 
 
-
     @Override
     public void setEmployee(Employee employee) {
 
@@ -179,7 +269,7 @@ public class EmployeesRepositoryImpl
 
 
     @Override
-    public Integer countEmployeeHasSubordinate(Integer employeeId){
+    public Integer countEmployeeHasSubordinate(Integer employeeId) {
         return dsl.selectCount()
                 .from(Employees.EMPLOYEES)
                 .where(Employees.EMPLOYEES.LEADER.eq(employeeId))

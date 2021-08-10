@@ -2,6 +2,7 @@ package com.test.task.developer.demo.dao.tasks;
 
 import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.jooq.postgress.project.jooq_postgress_project.tables.Tasks;
+import com.jooq.postgress.project.jooq_postgress_project.tables.records.EmployeesRecord;
 import com.jooq.postgress.project.jooq_postgress_project.tables.records.TasksRecord;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
@@ -49,7 +50,7 @@ public class TasksRepositoryImpl
 //        System.out.println(pageable.getPageNumber());
         List<TasksRecord> queryResults = dsl.selectFrom(Tasks.TASKS)
 //                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
-//                .orderBy(getSortFields(pageable.getSort()))
+                .orderBy(Tasks.TASKS.PRIORITY)
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchInto(TasksRecord.class);
@@ -57,6 +58,82 @@ public class TasksRepositoryImpl
         List<Task> todoEntries = convertQueryResultsToModelObjects(queryResults);
         long totalCount = findCountByLikeExpression();
         return new PageImpl<>(todoEntries, pageable, totalCount);
+    }
+
+    @Override
+    public Page<Task> sortingTaskId(int asc, Pageable pageable) {
+        List<TasksRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.ID.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.ID.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Task> sortingTaskDescription(int asc, Pageable pageable) {
+        List<TasksRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.DESCRIPTION.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.DESCRIPTION.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Task> sortingTaskEmpId(int asc, Pageable pageable) {
+        List<TasksRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
+    }
+
+    @Override
+    public Page<Task> sortingTaskPriority(int asc, Pageable pageable) {
+        List<TasksRecord> queryResults;
+        if (asc == 2) {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.PRIORITY.asc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        } else {
+            queryResults = dsl.selectFrom(Tasks.TASKS)
+                    .orderBy(Tasks.TASKS.PRIORITY.desc())
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetchInto(TasksRecord.class);
+        }
+        return new PageImpl<>(convertQueryResultsToModelObjects(queryResults), pageable, findCountByLikeExpression());
     }
 
     //количество запросов

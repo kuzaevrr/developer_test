@@ -1,18 +1,24 @@
 package com.test.task.developer.demo.service;
 
+import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.test.task.developer.demo.dao.employees.EmployeesRepository;
 import com.test.task.developer.demo.dao.tasks.TasksRepository;
 import com.test.task.developer.demo.entity.Employee;
+import com.test.task.developer.demo.entity.PageNumb;
 import com.test.task.developer.demo.entity.Task;
-import com.test.task.developer.demo.sorting.comparators.tasks.PriorityTaskComparator;
+import org.jooq.SortField;
+import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Validated
@@ -36,15 +42,15 @@ public class ServiceDBJooqImpl
 
     @Override
     public Page<Employee> findBySearchTermEmployees( //String searchTerm,
-                                                     Pageable pageable){
+                                                     Pageable pageable) {
 
         return employeesRepository.findBySearchTerm( //searchTerm,
                 pageable);
     }
 
     @Override
-    public Page<Task> findBySearchTermTasks( Pageable pageable){
-        return  tasksRepository.findBySearchTerm(pageable);
+    public Page<Task> findBySearchTermTasks(Pageable pageable) {
+        return tasksRepository.findBySearchTerm(pageable);
     }
 
     @Override
@@ -58,7 +64,8 @@ public class ServiceDBJooqImpl
     }
 
 
-    /** Метод удаление сотрудника
+    /**
+     * Метод удаление сотрудника
      *
      * @param id_employee id сотрудника передаваемый из Фронта
      */
@@ -68,7 +75,7 @@ public class ServiceDBJooqImpl
     }
 
     @Override
-    public Integer countEmployeeHasSubordinate(Integer employeeId){
+    public Integer countEmployeeHasSubordinate(Integer employeeId) {
         return employeesRepository.countEmployeeHasSubordinate(employeeId);
     }
 
@@ -80,7 +87,6 @@ public class ServiceDBJooqImpl
     @Override
     public List<Task> allTasks() {
         List<Task> tasks = tasksRepository.allTasks();
-        Collections.sort(tasks, new PriorityTaskComparator());
         return tasks;
     }
 
@@ -118,5 +124,44 @@ public class ServiceDBJooqImpl
     public Integer getCountTasksByEmployeeId(Integer employeeId) {
         return tasksRepository.getCountTasksByEmployeeId(employeeId);
     }
+
+    @Override
+    public Page<Employee> getEmployeesOfSorting(Map<String, Integer> map, PageNumb pageNumb) {
+        if (map.get("empOfTask") == 1) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (entry.getKey().equals("empId") && entry.getValue() >= 2) {
+                    return employeesRepository.sortingEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("empFullName") && entry.getValue() >= 2) {
+                    return employeesRepository.sortingEmpFullName(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("empLeader") && entry.getValue() >= 2) {
+                    return employeesRepository.sortingEmpLeader(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("empBranch") && entry.getValue() >= 2) {
+                    return employeesRepository.sortingEmpBranch(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("empСountTasks") && entry.getValue() >= 2) {
+                    return employeesRepository.sortingEmpСountTasks(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                }
+            }
+        }
+        return employeesRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
+    }
+
+    @Override
+    public Page<Task> getTaskOfSorting(Map<String, Integer> map, PageNumb pageNumb) {
+        if (map.get("empOfTask") == 0) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (entry.getKey().equals("taskId") && entry.getValue() >= 2) {
+                    return tasksRepository.sortingTaskId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("taskDescription") && entry.getValue() >= 2) {
+                    return tasksRepository.sortingTaskDescription(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("taskEmpId") && entry.getValue() >= 2) {
+                    return tasksRepository.sortingTaskEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                } else if (entry.getKey().equals("taskPriority") && entry.getValue() >= 2) {
+                    return tasksRepository.sortingTaskPriority(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                }
+            }
+        }
+        return tasksRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
+    }
+
 
 }

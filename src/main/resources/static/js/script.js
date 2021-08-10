@@ -283,7 +283,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (p.length !== 0) {
                 modalTitle.textContent = `${list.edit} - Сотрудника №${p[0].id}`;
                 form.elements.full_name.value = p[0].fullName;
-                if (p[0].leader !== null)  document.querySelector(`.modal_emp select option[value="${p[0].leader}"]`).selected = true;
+                if (p[0].leader !== null) document.querySelector(`.modal_emp select option[value="${p[0].leader}"]`).selected = true;
                 form.elements.branch.value = p[0].branchName;
             } else {
                 modalTitle.textContent = `${list.create} - Сотрудника`;
@@ -315,7 +315,11 @@ window.addEventListener("DOMContentLoaded", () => {
         btnAddEmp.classList.add('show');
     }
 
-    //Сортировка
+    /**
+     * Метод сортировки сотрудников и задач
+     * @param buttonTable кнопки
+     * @param buttonSort
+     */
     function clickableSort(buttonTable, buttonSort) {
         buttonTable.forEach(item => {
             let tableName, apiTable;
@@ -377,26 +381,47 @@ window.addEventListener("DOMContentLoaded", () => {
             taskDescription: columns[6],
             taskEmpId: columns[7],
             taskPriority: columns[8],
-            empOfTask: empOfTaskP
+            empOfTask: empOfTaskP,
+            pageNumb: page
         };
 
         const request = new XMLHttpRequest;
-        request.open('POST', urlBase + '/api/getSort');
+        if(empOfTaskP) request.open('POST', urlBase + '/api/getSortEmp');
+        else request.open('POST', urlBase + '/api/getSortTask');
         request.setRequestHeader('Content-type', 'application/json');
         const json = JSON.stringify(columnsObj);
 
         request.send(json);
-        // console.log(json);
+
         request.addEventListener('load', () => {
-            if (request.status === 200) {
-                // console.log('Успешно');
-                // console.log(request.response);
-                createTable(JSON.parse(request.response), tableName);
-            } else {
-                // console.log('Error');
-                alert(JSON.parse(request.response).info);
+                if (request.status === 200) {
+                    // let object = JSON.parse(request.response);
+
+                    if (tableName === "table_emps") {
+                        arrEmployees = JSON.parse(JSON.stringify(JSON.parse(request.response).content)); //глубокое клонирование объекта
+                        arrEmployees = [];
+                        JSON.parse(request.response).content.forEach(item => {
+                            arrEmployees.push(new Employee(item.id, item.fullName, item.leader, item.branchName, item.numberTasks, item.leaderName));
+                        });
+                        createTable(arrEmployees, tableName);
+                    } else if (tableName === 'table_tasks') {
+                        arrTasks = JSON.parse(JSON.stringify(JSON.parse(request.response).content));
+                        arrTasks = [];
+                        JSON.parse(request.response).content.forEach(item => {
+                            arrTasks.push(new Task(item.id, item.description, item.employeeId, item.priority, item.employeeFullName));
+                        });
+                        createTable(arrTasks, tableName);
+
+
+                    }
+                    paginationView(JSON.parse(request.response).totalPages);
+                    pagination(JSON.parse(request.response).pageable.pageNumber);
+                } else {
+                    // console.log('Error');
+                    alert(JSON.parse(request.response).info);
+                }
             }
-        });
+        );
     }
 
 
@@ -510,6 +535,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 paginationView(object.totalPages);
                 pagination(object.pageable.pageNumber);
             } else {
+                alert(JSON.parse(request.response));
             }
         });
     }
@@ -591,4 +617,5 @@ window.addEventListener("DOMContentLoaded", () => {
             return `Employee {${this.id}, ${this.fullName}, ${this.leader}, ${this.branchName}, ${this.numberTasks}}`;
         }
     }
-});
+})
+;

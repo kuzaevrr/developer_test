@@ -4,8 +4,8 @@ public class PageNumb {
 
     private int pageNumb;
 
-    public PageNumb(int page) {
-        this.pageNumb = page;
+    public PageNumb(int pageNumb) {
+        this.pageNumb = pageNumb;
     }
 
     public PageNumb() {

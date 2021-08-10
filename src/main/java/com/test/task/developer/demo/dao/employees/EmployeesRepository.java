@@ -15,7 +15,14 @@ public interface EmployeesRepository {
     void deleteAllEmployees();
     void updateEmployee(Employee employee);
     Integer countEmployeeHasSubordinate(Integer employeeId);
-
     Page<Employee> findBySearchTerm( //String searchTerm,
                                     Pageable pageable);
+
+
+    Page<Employee> sortingEmpId(int asc, Pageable pageable);
+    Page<Employee> sortingEmpFullName(int asc, Pageable pageable);
+    Page<Employee> sortingEmpLeader(int asc, Pageable pageable);
+    Page<Employee> sortingEmpBranch(int asc, Pageable pageable);
+    Page<Employee> sortingEmpСountTasks(int asc, Pageable pageable);
+
 }
