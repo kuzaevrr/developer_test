@@ -1,36 +1,34 @@
 package com.test.task.developer.demo.aop;
 
-
-import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.Task;
 import com.test.task.developer.demo.service.ServiceDBJooqImpl;
-import io.micrometer.core.instrument.util.JsonUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 @Component
 @Aspect
 public class ValidationAspect {
 
-    @Autowired
-    private ServiceDBJooqImpl service;
+    private final ServiceDBJooqImpl service;
+
+    public ValidationAspect(ServiceDBJooqImpl service) {
+        this.service = service;
+    }
 
     @Pointcut("execution(public void com.test.task.developer.demo.service.ServiceDBJooqImpl.setTask(*))")
     private void setTask(){}
 
     @Pointcut("execution(public void com.test.task.developer.demo.service.ServiceDBJooqImpl.updateTask(*))")
     private void updateTask(){}
+
     /**
      * проверка на наличие подчиненого, на наличие незавершонной задчаи
      */
@@ -49,7 +47,7 @@ public class ValidationAspect {
     /**
      * Проверка на подчиненого
      *
-     * @param joinPoint
+     * @param joinPoint джоин поинт
      * @throws SQLException выброс исключения валидации
      */
     @Before("execution(public void com.test.task.developer.demo.service.ServiceDBJooqImpl.updateEmployee(*))")

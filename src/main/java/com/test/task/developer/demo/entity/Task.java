@@ -12,6 +12,7 @@ public class Task implements Comparable<Task> {
     private Integer priority;
     private String description;
     private Integer employeeId;
+
     private String employeeFullName;
 
     public Task(Integer id, Integer priority, String description, Integer employeeId) {

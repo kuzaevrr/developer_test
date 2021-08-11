@@ -1,22 +1,17 @@
 package com.test.task.developer.demo.service;
 
-import com.jooq.postgress.project.jooq_postgress_project.tables.Employees;
+
 import com.test.task.developer.demo.dao.employees.EmployeesRepository;
 import com.test.task.developer.demo.dao.tasks.TasksRepository;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.PageNumb;
 import com.test.task.developer.demo.entity.Task;
-import org.jooq.SortField;
-import org.jooq.TableField;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +20,14 @@ import java.util.Map;
 public class ServiceDBJooqImpl
         implements ServiceDBJooq {
 
-    @Autowired
-    private EmployeesRepository employeesRepository;
-    @Autowired
-    private TasksRepository tasksRepository;
+    private final EmployeesRepository employeesRepository;
+    private final TasksRepository tasksRepository;
+
+    public ServiceDBJooqImpl(EmployeesRepository employeesRepository, TasksRepository tasksRepository) {
+        this.employeesRepository = employeesRepository;
+        this.tasksRepository = tasksRepository;
+    }
+
 
     @Override
     public List<Employee> allEmployees() {
@@ -86,8 +85,7 @@ public class ServiceDBJooqImpl
 
     @Override
     public List<Task> allTasks() {
-        List<Task> tasks = tasksRepository.allTasks();
-        return tasks;
+        return tasksRepository.allTasks();
     }
 
     @Override
@@ -129,17 +127,23 @@ public class ServiceDBJooqImpl
     public Page<Employee> getEmployeesOfSorting(Map<String, Integer> map, PageNumb pageNumb) {
         if (map.get("empOfTask") == 1) {
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                if (entry.getKey().equals("empId") && entry.getValue() >= 2) {
-                    return employeesRepository.sortingEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("empFullName") && entry.getValue() >= 2) {
-                    return employeesRepository.sortingEmpFullName(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("empLeader") && entry.getValue() >= 2) {
-                    return employeesRepository.sortingEmpLeader(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("empBranch") && entry.getValue() >= 2) {
-                    return employeesRepository.sortingEmpBranch(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("empСountTasks") && entry.getValue() >= 2) {
-                    return employeesRepository.sortingEmpСountTasks(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                if (entry.getValue() >= 2) {
+                    switch (entry.getKey()) {
+                        case "empId":
+                            return employeesRepository.sortingEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "empFullName":
+                            return employeesRepository.sortingEmpFullName(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "empLeader":
+                            return employeesRepository.sortingEmpLeader(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "empBranch":
+                            return employeesRepository.sortingEmpBranch(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "empAmountTasks":
+                            return employeesRepository.sortingEmpAmountTasks(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        default:
+                            return employeesRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
+                    }
                 }
+
             }
         }
         return employeesRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
@@ -149,19 +153,26 @@ public class ServiceDBJooqImpl
     public Page<Task> getTaskOfSorting(Map<String, Integer> map, PageNumb pageNumb) {
         if (map.get("empOfTask") == 0) {
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                if (entry.getKey().equals("taskId") && entry.getValue() >= 2) {
-                    return tasksRepository.sortingTaskId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("taskDescription") && entry.getValue() >= 2) {
-                    return tasksRepository.sortingTaskDescription(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("taskEmpId") && entry.getValue() >= 2) {
-                    return tasksRepository.sortingTaskEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
-                } else if (entry.getKey().equals("taskPriority") && entry.getValue() >= 2) {
-                    return tasksRepository.sortingTaskPriority(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                if (entry.getValue() >= 2) {
+                    switch (entry.getKey()) {
+                        case "taskId":
+                            return tasksRepository.sortingTaskId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "taskEmpId":
+                            return tasksRepository.sortingTaskEmpId(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "taskDescription":
+                            return tasksRepository.sortingTaskDescription(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        case "taskPriority":
+                            return tasksRepository.sortingTaskPriority(entry.getValue(), PageRequest.of(pageNumb.getPageNumb(), 20));
+                        default:
+                            return tasksRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
+                    }
                 }
             }
         }
-        return tasksRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(), 20));
+        return tasksRepository.findBySearchTerm(PageRequest.of(pageNumb.getPageNumb(),20));
     }
 
-
 }
+
+
+

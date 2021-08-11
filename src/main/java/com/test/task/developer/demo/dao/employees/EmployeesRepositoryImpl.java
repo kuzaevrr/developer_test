@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.lang.reflect.Field;
 
+import static com.jooq.postgress.project.jooq_postgress_project.tables.Employees.*;
+import static org.jooq.impl.DSL.*;
+
 @Repository
 @Transactional
 public class EmployeesRepositoryImpl
@@ -35,14 +38,14 @@ public class EmployeesRepositoryImpl
     public Page<Employee> sortingEmpId(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.ID.asc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.ID.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.ID.desc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.ID.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
@@ -54,14 +57,14 @@ public class EmployeesRepositoryImpl
     public Page<Employee> sortingEmpFullName(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.FULL_NAME.asc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.FULL_NAME.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.FULL_NAME.desc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.FULL_NAME.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
@@ -73,14 +76,14 @@ public class EmployeesRepositoryImpl
     public Page<Employee> sortingEmpLeader(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.LEADER.asc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.LEADER.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.LEADER.desc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.LEADER.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
@@ -92,14 +95,14 @@ public class EmployeesRepositoryImpl
     public Page<Employee> sortingEmpBranch(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.BRANCH_NAME.asc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.BRANCH_NAME.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Employees.EMPLOYEES.BRANCH_NAME.desc())
+            queryResults = dsl.selectFrom(EMPLOYEES)
+                    .orderBy(EMPLOYEES.BRANCH_NAME.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
@@ -108,17 +111,37 @@ public class EmployeesRepositoryImpl
     }
 
     @Override
-    public Page<Employee> sortingEmpСountTasks(int asc, Pageable pageable) {
+    public Page<Employee> sortingEmpAmountTasks(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.asc())
+//            queryResults = dsl.selectFrom(EMPLOYEES)
+//                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.asc())
+//                    .limit(pageable.getPageSize())
+//                    .offset(pageable.getOffset())
+//                    .fetchInto(EmployeesRecord.class);
+            queryResults = dsl.select(
+                    asterisk(),
+                    field(select(count())
+                            .from(Tasks.TASKS)
+                            .where(Tasks.TASKS.EMPLOYEE_ID.eq(Employees.EMPLOYEES.ID))).as(Tasks.TASKS.EMPLOYEE_ID))
+                    .from(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.ID.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Employees.EMPLOYEES)
-                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+//            queryResults = dsl.selectFrom(EMPLOYEES)
+//                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+//                    .limit(pageable.getPageSize())
+//                    .offset(pageable.getOffset())
+//                    .fetchInto(EmployeesRecord.class);
+            queryResults = dsl.select(
+                    asterisk(),
+                    field(select(count())
+                            .from(Tasks.TASKS)
+                            .where(Tasks.TASKS.EMPLOYEE_ID.eq(Employees.EMPLOYEES.ID))).as(Tasks.TASKS.EMPLOYEE_ID))
+                    .from(Employees.EMPLOYEES)
+                    .orderBy(Employees.EMPLOYEES.ID.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
@@ -130,7 +153,7 @@ public class EmployeesRepositoryImpl
     @Override
     public Page<Employee> findBySearchTerm(Pageable pageable) {
 
-        List<EmployeesRecord> queryResults = dsl.selectFrom(Employees.EMPLOYEES)
+        List<EmployeesRecord> queryResults = dsl.selectFrom(EMPLOYEES)
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchInto(EmployeesRecord.class);
@@ -144,7 +167,7 @@ public class EmployeesRepositoryImpl
     private long findCountByLikeExpression( //String likeExpression
     ) {
         return dsl.fetchCount(dsl.select()
-                        .from(Employees.EMPLOYEES)
+                        .from(EMPLOYEES)
 //                .where(Employees.EMPLOYEES.BRANCH_NAME.likeIgnoreCase(likeExpression))
         );
     }
@@ -173,8 +196,8 @@ public class EmployeesRepositoryImpl
     private TableField getTableField(String sortFieldName) {
         TableField sortField = null;
         try {
-            Field tableField = Employees.EMPLOYEES.getClass().getField(sortFieldName);
-            sortField = (TableField) tableField.get(Employees.EMPLOYEES);
+            Field tableField = EMPLOYEES.getClass().getField(sortFieldName);
+            sortField = (TableField) tableField.get(EMPLOYEES);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
             String errorMessage = String.format("Could not find table field: {}", sortFieldName);
             throw new InvalidDataAccessApiUsageException(errorMessage, ex);
@@ -220,8 +243,7 @@ public class EmployeesRepositoryImpl
         List<Employee> posts = new ArrayList<>();
         Result<Record> result = dsl
                 .select()
-                .from(Employees.EMPLOYEES)
-//                .limit(0, 10)
+                .from(EMPLOYEES)
                 .fetch();
         for (Record r : result) {
             posts.add(getEmployeeEntity(r));
@@ -231,8 +253,8 @@ public class EmployeesRepositoryImpl
 
     @Override
     public Employee getEmployeeById(Integer id) {
-        return Objects.requireNonNull(dsl.selectFrom(Employees.EMPLOYEES)
-                .where(Employees.EMPLOYEES.ID.eq(id))
+        return Objects.requireNonNull(dsl.selectFrom(EMPLOYEES)
+                .where(EMPLOYEES.ID.eq(id))
                 .fetchAny())
                 .into(Employee.class);
     }
@@ -241,19 +263,19 @@ public class EmployeesRepositoryImpl
     @Override
     public void setEmployee(Employee employee) {
 
-        dsl.insertInto(Employees.EMPLOYEES)
-                .set(Employees.EMPLOYEES.FULL_NAME, employee.getFullName())
-                .set(Employees.EMPLOYEES.LEADER, employee.getLeader())
-                .set(Employees.EMPLOYEES.BRANCH_NAME, employee.getBranchName())
-                .returning(Employees.EMPLOYEES.ID)
+        dsl.insertInto(EMPLOYEES)
+                .set(EMPLOYEES.FULL_NAME, employee.getFullName())
+                .set(EMPLOYEES.LEADER, employee.getLeader())
+                .set(EMPLOYEES.BRANCH_NAME, employee.getBranchName())
+                .returning(EMPLOYEES.ID)
                 .fetchOne();
     }
 
     @Override
     public void updateEmployee(Employee employee) {
-        dsl.update(Employees.EMPLOYEES)
-                .set(dsl.newRecord(Employees.EMPLOYEES, employee))
-                .where(Employees.EMPLOYEES.ID.eq(employee.getId()))
+        dsl.update(EMPLOYEES)
+                .set(dsl.newRecord(EMPLOYEES, employee))
+                .where(EMPLOYEES.ID.eq(employee.getId()))
                 .returning()
                 .fetchOptional()
                 .orElseThrow(() -> new DataAccessException("Error updating entity: " + employee.getId()))
@@ -262,8 +284,8 @@ public class EmployeesRepositoryImpl
 
     @Override
     public void deleteEmployee(Integer employeeId) {
-        dsl.deleteFrom(Employees.EMPLOYEES)
-                .where(Employees.EMPLOYEES.ID.eq(employeeId))
+        dsl.deleteFrom(EMPLOYEES)
+                .where(EMPLOYEES.ID.eq(employeeId))
                 .execute();
     }
 
@@ -271,22 +293,22 @@ public class EmployeesRepositoryImpl
     @Override
     public Integer countEmployeeHasSubordinate(Integer employeeId) {
         return dsl.selectCount()
-                .from(Employees.EMPLOYEES)
-                .where(Employees.EMPLOYEES.LEADER.eq(employeeId))
+                .from(EMPLOYEES)
+                .where(EMPLOYEES.LEADER.eq(employeeId))
                 .fetchAny(0, Integer.class);
     }
 
     @Override
     public void deleteAllEmployees() {
-        dsl.truncate(Employees.EMPLOYEES)
+        dsl.truncate(EMPLOYEES)
                 .execute();
     }
 
     private Employee getEmployeeEntity(Record r) {
-        Integer id = r.getValue(Employees.EMPLOYEES.ID, Integer.class);
-        String full_name = r.getValue(Employees.EMPLOYEES.FULL_NAME, String.class);
-        Integer leader = r.getValue(Employees.EMPLOYEES.LEADER, Integer.class);
-        String branch_name = r.getValue(Employees.EMPLOYEES.BRANCH_NAME, String.class);
+        Integer id = r.getValue(EMPLOYEES.ID, Integer.class);
+        String full_name = r.getValue(EMPLOYEES.FULL_NAME, String.class);
+        Integer leader = r.getValue(EMPLOYEES.LEADER, Integer.class);
+        String branch_name = r.getValue(EMPLOYEES.BRANCH_NAME, String.class);
 
         return new Employee(id, full_name, leader, branch_name);
     }

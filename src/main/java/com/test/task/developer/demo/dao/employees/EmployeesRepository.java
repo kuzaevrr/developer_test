@@ -23,6 +23,6 @@ public interface EmployeesRepository {
     Page<Employee> sortingEmpFullName(int asc, Pageable pageable);
     Page<Employee> sortingEmpLeader(int asc, Pageable pageable);
     Page<Employee> sortingEmpBranch(int asc, Pageable pageable);
-    Page<Employee> sortingEmpСountTasks(int asc, Pageable pageable);
+    Page<Employee> sortingEmpAmountTasks(int asc, Pageable pageable);
 
 }

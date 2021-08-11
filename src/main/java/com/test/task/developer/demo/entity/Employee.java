@@ -10,6 +10,7 @@ public class Employee implements Comparable<Employee> {
     private Integer leader;
     private String branchName;
     private Integer numberTasks;
+
     private String leaderName;
 
     public Employee(Integer id, String fullName, Integer leader, String branchName) {

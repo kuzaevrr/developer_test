@@ -5,7 +5,7 @@ CREATE TABLE employee (
   full_name varchar(250) not null,
   leader int,
   branch_name varchar (250) not null,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id), foreign key(leader) REFERENCES employee(id)
 );
 
 DROP TABLE IF EXISTS employee;

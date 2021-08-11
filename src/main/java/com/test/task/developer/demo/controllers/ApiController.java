@@ -4,8 +4,7 @@ package com.test.task.developer.demo.controllers;
 import com.test.task.developer.demo.entity.Employee;
 import com.test.task.developer.demo.entity.PageNumb;
 import com.test.task.developer.demo.entity.Task;
-import com.test.task.developer.demo.service.ServiceDBJooq;;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.test.task.developer.demo.service.ServiceDBJooq;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -21,8 +20,11 @@ import java.util.*;
 @RequestMapping("/api")
 public class ApiController {
 
-    @Autowired
-    private  ServiceDBJooq service;
+    private final ServiceDBJooq service;
+
+    public ApiController(ServiceDBJooq service) {
+        this.service = service;
+    }
 
     @PostMapping("/searchEmp")
     public Page<Employee> findBySearchTermEmp(//@RequestParam("searchTerm")String searchTerm,

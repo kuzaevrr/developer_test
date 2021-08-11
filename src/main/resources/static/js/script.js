@@ -376,7 +376,7 @@ window.addEventListener("DOMContentLoaded", () => {
             empFullName: columns[1],
             empLeader: columns[2],
             empBranch: columns[3],
-            empСountTasks: columns[4],
+            empAmountTasks: columns[4],
             taskId: columns[5],
             taskDescription: columns[6],
             taskEmpId: columns[7],
