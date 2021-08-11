@@ -19,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static com.jooq.postgress.project.jooq_postgress_project.tables.Employees.EMPLOYEES;
+import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.unquotedName;
+
 
 @Repository
 @Transactional
@@ -102,14 +106,31 @@ public class TasksRepositoryImpl
     public Page<Task> sortingTaskEmpId(int asc, Pageable pageable) {
         List<TasksRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(Tasks.TASKS)
-                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.asc())
+
+            queryResults = dsl.select(
+                    asterisk(),
+                    field(select(EMPLOYEES.as("e").FULL_NAME)
+                            .from(Employees.EMPLOYEES.as("e"))
+                            .where(Tasks.TASKS.as("t").EMPLOYEE_ID.eq(Employees.EMPLOYEES.as("e").ID))).as(unquotedName("emp_name")))
+                    .from(Tasks.TASKS.as("t"))
+                    .orderBy(field(unquotedName("emp_name")).asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(TasksRecord.class);
         } else {
-            queryResults = dsl.selectFrom(Tasks.TASKS)
-                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+//            queryResults = dsl.selectFrom(Tasks.TASKS)
+//                    .orderBy(Tasks.TASKS.EMPLOYEE_ID.desc())
+//                    .limit(pageable.getPageSize())
+//                    .offset(pageable.getOffset())
+//                    .fetchInto(TasksRecord.class);
+
+            queryResults = dsl.select(
+                    asterisk(),
+                    field(select(EMPLOYEES.as("e").FULL_NAME)
+                            .from(Employees.EMPLOYEES.as("e"))
+                            .where(Tasks.TASKS.as("t").EMPLOYEE_ID.eq(Employees.EMPLOYEES.as("e").ID))).as(unquotedName("emp_name")))
+                    .from(Tasks.TASKS.as("t"))
+                    .orderBy(field(unquotedName("emp_name")).desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(TasksRecord.class);

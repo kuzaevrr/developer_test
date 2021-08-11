@@ -8,6 +8,7 @@ import com.test.task.developer.demo.dao.tasks.TasksRepository;
 import com.test.task.developer.demo.entity.Employee;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
+import org.jooq.util.xml.jaxb.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -76,14 +77,24 @@ public class EmployeesRepositoryImpl
     public Page<Employee> sortingEmpLeader(int asc, Pageable pageable) {
         List<EmployeesRecord> queryResults;
         if (asc == 2) {
-            queryResults = dsl.selectFrom(EMPLOYEES)
-                    .orderBy(EMPLOYEES.LEADER.asc())
+            queryResults = dsl.select(
+                    asterisk(),
+                    field(select(EMPLOYEES.as("e2").FULL_NAME)
+                            .from(Employees.EMPLOYEES.as("e2"))
+                            .where(Employees.EMPLOYEES.as("e1").LEADER.eq(Employees.EMPLOYEES.as("e2").ID))).as(unquotedName("leadername")))
+                    .from(Employees.EMPLOYEES.as("e1"))
+                    .orderBy(field(unquotedName("leadername")).asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
         } else {
-            queryResults = dsl.selectFrom(EMPLOYEES)
-                    .orderBy(EMPLOYEES.LEADER.desc())
+          queryResults = dsl.select(
+                    asterisk(),
+                    field(select(EMPLOYEES.as("e2").FULL_NAME)
+                            .from(Employees.EMPLOYEES.as("e2"))
+                            .where(Employees.EMPLOYEES.as("e1").LEADER.eq(Employees.EMPLOYEES.as("e2").ID))).as(unquotedName("leadername")))
+                    .from(Employees.EMPLOYEES.as("e1"))
+                    .orderBy(field(unquotedName("leadername")).desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetchInto(EmployeesRecord.class);
